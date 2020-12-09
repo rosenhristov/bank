@@ -15,7 +15,7 @@ import java.util.Currency;
 @Entity
 @Table(name = "bank_account")
 @ApiModel(description = "Model for bank account")
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper=true)
 public class BankAccount extends BaseEntity implements Serializable {
 
     @Id

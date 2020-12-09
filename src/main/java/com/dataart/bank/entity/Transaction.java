@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "transaction")
 @ApiModel(description = "Model for bank transaction")
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper=true)
 public class Transaction extends BaseEntity implements Serializable {
 
     @Id

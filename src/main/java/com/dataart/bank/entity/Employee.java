@@ -18,7 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "employee")
 @ApiModel(description = "The model for a bank employee")
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper=true)
 public class Employee extends BaseEntity implements Serializable {
 
     @Id
