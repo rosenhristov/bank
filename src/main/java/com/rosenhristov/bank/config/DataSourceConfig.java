@@ -1,5 +1,6 @@
 package com.rosenhristov.bank.config;
 
+import lombok.extern.slf4j.Slf4j;
 import oracle.ucp.jdbc.PoolDataSource;
 import oracle.ucp.jdbc.PoolDataSourceFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
+@Slf4j
 @Configuration
 public class DataSourceConfig {
 
@@ -30,6 +32,7 @@ public class DataSourceConfig {
 
     @Bean
     public DataSource dataSource() throws SQLException {
+        log.info("Initializig DataSource bean");
         PoolDataSource dataSource = PoolDataSourceFactory.getPoolDataSource();
         dataSource.setUser(username);
         dataSource.setPassword(password);

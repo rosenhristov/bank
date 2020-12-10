@@ -1,5 +1,6 @@
 package com.rosenhristov.bank.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -21,6 +22,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+@Slf4j
 @Import({SpringDataRestConfiguration.class, BeanValidatorPluginsConfiguration.class})
 @Configuration
 public class SwaggerConfig {
@@ -30,6 +32,7 @@ public class SwaggerConfig {
 
     @Bean
     public Docket swaggerConfiguration() {
+        log.info("Initializing Docket bean");
         return new Docket(DocumentationType.SWAGGER_2)
                 .host("localhost:8080")
                 .directModelSubstitute(LocalDate.class, Date.class)

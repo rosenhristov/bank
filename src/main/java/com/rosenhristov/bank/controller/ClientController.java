@@ -1,12 +1,12 @@
 package com.rosenhristov.bank.controller;
 
 import com.rosenhristov.bank.dto.ClientDTO;
-import com.rosenhristov.bank.exception.ErrorStub;
 import com.rosenhristov.bank.entity.Client;
+import com.rosenhristov.bank.exception.ErrorStub;
 import com.rosenhristov.bank.service.ClientService;
 import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,20 +17,14 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/clients")
+@AllArgsConstructor
 @Api(value = "Operations related to clients", tags = {"Clients"})
 @SwaggerDefinition(tags = {@Tag(name = "Clients", description = "Operations related to clients") })
 public class ClientController {
 
     private final ClientService service;
 
-    @Autowired
-    public ClientController(ClientService service) {
-        this.service = service;
-    }
-
-    @ApiOperation(
-            value="Retrieve all clients",
-            notes = "Used to fetch all clients from the database")
+    @ApiOperation(value="Retrieve all clients", notes = "Used to fetch all clients from the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = Client.class),
             @ApiResponse(code = 201, message = "Created", response = Client.class),
@@ -41,15 +35,14 @@ public class ClientController {
     })
     @GetMapping(value = "/", produces = {"application/json"})
     public ResponseEntity<List<ClientDTO>> getAll() {
+        log.info("GETting all clients");
         return ResponseEntity.of(
                 Optional.of(service.getAll()));
     }
 
 
 
-    @ApiOperation(
-            value="Fetch a client by id",
-            notes = "Provide and id to lookup specific client from the database")
+    @ApiOperation(value="Fetch a client by id", notes = "Provide and id to lookup specific client from the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
@@ -59,6 +52,7 @@ public class ClientController {
     })
     @GetMapping(value = "/{clientId}", produces = {"application/json"})
     public ResponseEntity<ClientDTO> getClientById(@PathVariable Long clientId) {
+        log.info("GETting client with id = {}", clientId);
         return ResponseEntity.of(
                 service.getClientById(clientId));
     }
@@ -84,9 +78,7 @@ public class ClientController {
     }
 
 
-    @ApiOperation(
-            value="Modify a client",
-            notes = "Used to replace an old client with a new one with a certain id in the database ")
+    @ApiOperation(value="Update a client", notes = "Used to update a client with a certain id in the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = Client.class),
             @ApiResponse(code = 201, message = "Created", response = Client.class),
@@ -96,9 +88,11 @@ public class ClientController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorStub.class)
     })
     @PutMapping(value = "/{clientId}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<ClientDTO> updateClient(@Valid @RequestBody ClientDTO newClient, @PathVariable Long clientId) {
-        Optional<ClientDTO> opt = service.getClientById(clientId);
-            return ResponseEntity.of(opt
+    public ResponseEntity<ClientDTO> updateClient(@Valid @RequestBody ClientDTO newClient,
+                                                  @PathVariable Long clientId) {
+        log.info("UPDATE-ing client with id = {}", clientId);
+        return ResponseEntity.of(
+                     service.getClientById(clientId)
                             .map(client -> {
                                 client.setName(newClient.getName());
                                 client.setMidName(newClient.getMidName());
@@ -116,9 +110,7 @@ public class ClientController {
                                 return service.save(
                                         service.getMapper().toEntity(client));
                             }));
-        }
-
-
+    }
 
     @ApiOperation(value="Delete a client with indicated id",
             notes = "Used to delete a client by id from the database")
@@ -131,6 +123,7 @@ public class ClientController {
     })
     @DeleteMapping(value = "/{clientId}", produces = {"application/json"})
     public ResponseEntity<ClientDTO> deleteClient(@PathVariable Long clientId) {
+        log.info("DELETE-ing bank account {}", clientId);
         return ResponseEntity.of(
                 service.deleteClient(clientId));
     }

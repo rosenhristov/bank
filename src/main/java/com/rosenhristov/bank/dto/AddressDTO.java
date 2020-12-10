@@ -10,4 +10,5 @@ public class AddressDTO {
     private String street;
     private int streetNumber;
     private String country;
+
 }

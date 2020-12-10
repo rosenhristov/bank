@@ -1,12 +1,12 @@
 package com.rosenhristov.bank.controller;
 
 import com.rosenhristov.bank.dto.TransactionDTO;
-import com.rosenhristov.bank.exception.ErrorStub;
 import com.rosenhristov.bank.entity.Transaction;
+import com.rosenhristov.bank.exception.ErrorStub;
 import com.rosenhristov.bank.service.TransactionService;
 import io.swagger.annotations.*;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,21 +17,14 @@ import java.util.Optional;
 @Slf4j
 @RestController
 @RequestMapping("/transactions")
+@AllArgsConstructor
 @Api(value = "Operations related to financial transactions", tags = {"Transactions"})
 @SwaggerDefinition(tags = {@Tag(name = "Transactions", description = "Operations related to financial transactions")})
 public class TransactionController {
 
     private TransactionService service;
 
-    @Autowired
-    public TransactionController(TransactionService service) {
-        this.service = service;
-    }
-
-
-    @ApiOperation(
-            value="Retrieve all financial transactions",
-            notes = "Used to fetch all financial transactions from the database")
+    @ApiOperation(value="Retrieve all financial transactions", notes = "Used to fetch all financial transactions from the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = Transaction.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
@@ -41,13 +34,13 @@ public class TransactionController {
     })
     @GetMapping(value = "/", produces = {"application/json"})
     public ResponseEntity<List<TransactionDTO>> getAll() {
+        log.info("GETting all transactions");
         return ResponseEntity.of(
                 Optional.of(service.getAll()));
     }
 
-    @ApiOperation(
-            value="Fetch a financial transaction by id",
-            notes = "Provide and id to lookup specific financial transaction from the database")
+    @ApiOperation(value="Fetch a financial transaction by id",
+                  notes = "Provide and id to lookup specific financial transaction from the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = Transaction.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
@@ -57,12 +50,12 @@ public class TransactionController {
     })
     @GetMapping(value = "/{transactionId}", produces = {"application/json"})
     public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long transactionId) {
+        log.info("GETting transaction with id = {}", transactionId);
         return ResponseEntity.of(service.getTransactionById(transactionId));
     }
 
     @ApiOperation(
-            value="Add a new financial transaction",
-            notes = "Used to insert new financial transaction in the database")
+            value="Add a new financial transaction", notes = "Used to insert new financial transaction in the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = Transaction.class),
             @ApiResponse(code = 201, message = "Created", response = Transaction.class),
@@ -73,6 +66,7 @@ public class TransactionController {
     })
     @PostMapping(value = "/", consumes = {"application/json"}, produces = {"application/json"})
     public ResponseEntity<TransactionDTO> addTransaction(@Valid @RequestBody TransactionDTO newTransaction) {
+        log.info("INSERTing transaction");
         return ResponseEntity.of(
                 Optional.ofNullable(service.save(
                         service.getMapper().toEntity(newTransaction))));
@@ -92,6 +86,7 @@ public class TransactionController {
     @PutMapping(value = "/{transactionId}", consumes = {"application/json"}, produces = {"application/json"})
     public  ResponseEntity<TransactionDTO> updateTransaction(@Valid @RequestBody TransactionDTO newTransaction,
                                                              @PathVariable Long transactionId) {
+        log.info("UPDATE-ing transaction with id = {}", transactionId);
         return ResponseEntity.of(
                 service.getTransactionById(transactionId)
                        .map(transaction -> {
@@ -103,9 +98,8 @@ public class TransactionController {
                        }));
     }
 
-    @ApiOperation(
-            value="Delete a financial transaction with indicated id",
-            notes = "Used to delete a financial transaction by id from the database")
+    @ApiOperation(value="Delete a financial transaction with indicated id",
+                  notes = "Used to delete a financial transaction by id from the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = Transaction.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
@@ -115,6 +109,7 @@ public class TransactionController {
     })
     @DeleteMapping(value = "/{transactionId}", produces = {"application/json"})
     public ResponseEntity<TransactionDTO> deleteTransaction(@PathVariable Long transactionId) {
+        log.info("DELETE-ing transaction id = {}", transactionId);
         return ResponseEntity.of(
                 service.deleteTransaction(transactionId));
     }
