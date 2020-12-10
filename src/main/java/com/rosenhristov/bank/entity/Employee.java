@@ -24,21 +24,21 @@ public class Employee extends BaseEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_Sequence")
     @SequenceGenerator(name = "employee_Sequence", sequenceName = "EMPLOYEE_SEQ")
-    @Column(name= "id")
+    @Column(name = "id")
     @ApiModelProperty(name = "id", value = "the id of an employee", dataType = "Long", example = "1")
     private Long id;
 
     @NotNull(message = "Employee name must not be empty")
-    @Column(name= "name")
+    @Column(name = "name")
     @ApiModelProperty(name = "name", value = "the name of an employee", dataType = "String", example = "Ivan")
     private String name;
 
-    @Column(name= "mid_name")
+    @Column(name = "mid_name")
     @ApiModelProperty(name = "midName", value = "the second name of an employee", dataType = "String", example = "Petrov")
     private String midName;
 
     @NotNull(message = "Employee surname must not be empty")
-    @Column(name= "surname")
+    @Column(name = "surname")
     @ApiModelProperty(name = "surname", value = "the last name of an employee", dataType = "String", example = "Dimitrov")
     private String surname;
 
@@ -46,22 +46,22 @@ public class Employee extends BaseEntity implements Serializable {
              message = "Password must be 8 to 30 characters long and must include at least one of each of " +
                        "these: small letter, capital letter, number, special character")
     @NotNull(message = "Employee password must not be empty")
-    @Column(name="password")
+    @Column(name ="password")
     @ApiModelProperty(name = "password", value = "the password of an employee", dataType = "String", example = ":P@ssw0rd!")
     private String password;
 
     @NotNull(message = "Employee position must not be empty")
-    @Column(name= "position")
+    @Column(name = "position")
     @ApiModelProperty(name = "position", value = "the position of an employee in the bank", dataType = "String", example = "Managing Director")
     private String position;
 
     @NotNull(message = "Employee salary must not be empty")
-    @Column(name= "salary")
+    @Column(name = "salary")
     @ApiModelProperty(name = "salary", value = "the salary of an employee", dataType = "String", example = ":P@ssw0rd!")
     private BigInteger salary;
 
     @NotNull(message = "Employee phone number must not be empty")
-    @Column(name= "phone")
+    @Column(name = "phone")
     @ApiModelProperty(name = "phone", value = "the phone of an employee", dataType = "String", example = "+359888667788")
     private String phone;
 
@@ -72,7 +72,7 @@ public class Employee extends BaseEntity implements Serializable {
     private String email;
 
     @NotNull(message = "Employee address must not be empty")
-    @Column(name= "address")
+    @Column(name = "address")
     @ApiModelProperty(name = "address", value = "the addresss of an employee",
                       dataType = "String", example = "1000 Sofia, 10 Dondoukov Str.")
     private Address address;
@@ -84,7 +84,7 @@ public class Employee extends BaseEntity implements Serializable {
     private Date dateHired;
 
     @NotNull(message = "Employee's start of experience must not be empty")
-    @Column(name= "start_of_experience")
+    @Column(name = "start_of_experience")
     @ApiModelProperty(name = "startOfExperience", value = "the date when the employee started working experience",
                       dataType = "String", example = "2000-01-01")
     private Date startOfExperience;

@@ -1,20 +1,31 @@
 package com.rosenhristov.bank.exception;
 
-import javax.ws.rs.core.Application;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
-public class BankAppExceptionHandler extends Application {
+@ControllerAdvice
+public class BankAppExceptionHandler {
 
-    @Override
-    public Set<Class<?>> getClasses() {
-        return new HashSet<>(
-                List.of(
-                    BankException.class,
-                    NullPointerException.class
-                )
-        );
+    @ExceptionHandler(BankException.class)
+    public ResponseEntity<ErrorResponse> handleBankException(BankException e) {
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.NOT_FOUND.value(), buildDescription(e)),
+                HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+        return new ResponseEntity<>(
+                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), buildDescription(e)),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    private String buildDescription(Exception e) {
+        return String.format("%s occurred.\nMessage: %s.\nStack trace:\n%s",
+                e.getClass().getSimpleName(),
+                e.getMessage(),
+                e.getStackTrace().toString());
+    }
 }

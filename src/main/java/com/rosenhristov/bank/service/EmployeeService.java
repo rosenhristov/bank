@@ -20,7 +20,7 @@ public class EmployeeService {
     private final EmployeeMapper mapper;
 
     public Optional<EmployeeDTO> getEmployeeById(Long id) {
-        log.info("Retrieving employee with id = {} from database", id);
+        log.info("Retrieving employee with id: {} from database", id);
         return employeeRepository
                 .findById(id)
                 .map(employee -> mapper.toDto(employee));
@@ -44,7 +44,7 @@ public class EmployeeService {
     }
 
     public Optional<EmployeeDTO> deleteEmployee(Long id) {
-        log.info("Deleting employee with id = {} from database", id);
+        log.info("Deleting employee with id: {} from database", id);
         Optional<Employee> opt = employeeRepository.removeEmployeeById(id);
         return opt.map(entity -> mapper.toDto(entity));
     }

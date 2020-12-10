@@ -2,7 +2,8 @@ package com.rosenhristov.bank.controller;
 
 import com.rosenhristov.bank.dto.BankAccountDTO;
 import com.rosenhristov.bank.entity.BankAccount;
-import com.rosenhristov.bank.exception.ErrorStub;
+import com.rosenhristov.bank.exception.BankException;
+import com.rosenhristov.bank.exception.ErrorResponse;
 import com.rosenhristov.bank.service.BankAccountService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
@@ -27,10 +28,10 @@ public class BankAccountController {
     @ApiOperation(value="Retrieve all bank accounts", notes = "Used to fetch all bank accounts from the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = BankAccount.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorStub.class),
-            @ApiResponse(code = 404, message = "Not found", response = ErrorStub.class),
-            @ApiResponse(code = 500, message = "Server failure", response = ErrorStub.class)
+            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+            @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/", produces = {"application/json"})
     public ResponseEntity<List<BankAccountDTO>> getAll() {
@@ -42,15 +43,19 @@ public class BankAccountController {
     @ApiOperation(value="Fetch a bank account by id", notes = "Provide an id to lookup specific bank account from the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = BankAccount.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorStub.class),
-            @ApiResponse(code = 404, message = "Not found", response = ErrorStub.class),
-            @ApiResponse(code = 500, message = "Server failure", response = ErrorStub.class)
+            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+            @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/{accountId}", produces = {"application/json"})
     public ResponseEntity<BankAccountDTO> getBankAccountById(@PathVariable Long accountId) {
         log.info("GETting BankAccount with id {}", accountId);
-        return ResponseEntity.of(service.getBankAccountById(accountId));
+        Optional<BankAccountDTO> result = service.getBankAccountById(accountId);
+        if (result.isEmpty()) {
+            throw new BankException("Could not find bank account with id: " + accountId);
+        }
+        return ResponseEntity.of(result);
     }
 
 
@@ -58,17 +63,21 @@ public class BankAccountController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = BankAccount.class),
             @ApiResponse(code = 201, message = "Created", response = BankAccount.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorStub.class),
-            @ApiResponse(code = 404, message = "Not found", response = ErrorStub.class),
-            @ApiResponse(code = 500, message = "Server failure", response = ErrorStub.class)
+            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+            @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PostMapping(value = "/", consumes = {"application/json"}, produces = {"application/json"})
     public ResponseEntity<BankAccountDTO> addBankAccount(@Valid @RequestBody BankAccountDTO newAccount) {
         log.info("INSERTing bank account {}", newAccount.getAccountNumber());
-        return ResponseEntity.of(
-                Optional.ofNullable(service.save(
-                        service.getMapper().toEntity(newAccount))));
+        Optional<BankAccountDTO> result = Optional.ofNullable(
+                service.save(
+                        service.getMapper().toEntity(newAccount)));
+        if (result.isEmpty()) {
+            throw new BankException("Could not save bank account with accountNumber: " + newAccount.getAccountNumber());
+        }
+        return ResponseEntity.of(result);
     }
 
 
@@ -76,28 +85,36 @@ public class BankAccountController {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = BankAccount.class),
             @ApiResponse(code = 201, message = "Created", response = BankAccount.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorStub.class),
-            @ApiResponse(code = 404, message = "Not found", response = ErrorStub.class),
-            @ApiResponse(code = 500, message = "Server failure", response = ErrorStub.class)
+            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+            @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PutMapping(value = "/{accountId}", consumes = {"application/json"}, produces = {"application/json"})
     public ResponseEntity<BankAccountDTO> updateBankAccount(@Valid @RequestBody BankAccountDTO newAccount,
                                                             @PathVariable Long accountId) {
-        log.info("UPDATE-ing bank account with id = {}", accountId);
+        log.info("UPDATE-ing bank account with id: {}", accountId);
+        Optional<BankAccountDTO> result = service.getBankAccountById(accountId);
+        if (result.isEmpty()) {
+            throw new BankException("Could not find bank account with id: " + accountId);
+        }
         return ResponseEntity.of(
-                service.getBankAccountById(accountId)
-                        .map(account -> {
-                            account.setAccountNumber(newAccount.getAccountNumber());
-                            account.setIban(newAccount.getIban());
-                            account.setType(newAccount.getType());
-                            account.setCurrency(newAccount.getCurrency());
-                            account.setBalance(newAccount.getBalance());
-                            account.setClient(newAccount.getClient());
-                            account.setAccountManager(newAccount.getAccountManager());
-                            return service.save(
-                                    service.getMapper().toEntity(account));
-                        }));
+                result.map(account -> {
+                    account.setAccountNumber(newAccount.getAccountNumber());
+                    account.setIban(newAccount.getIban());
+                    account.setType(newAccount.getType());
+                    account.setCurrency(newAccount.getCurrency());
+                    account.setBalance(newAccount.getBalance());
+                    account.setClient(newAccount.getClient());
+                    account.setAccountManager(newAccount.getAccountManager());
+                    Optional<BankAccountDTO> dto = Optional.ofNullable(
+                            service.save(
+                                    service.getMapper().toEntity(account)));
+                    if (dto.isEmpty()) {
+                        throw new BankException("Could not update bank account with id: " + accountId);
+                    }
+                    return dto.get();
+                }));
     }
 
 
@@ -106,15 +123,18 @@ public class BankAccountController {
                   notes = "Used to delete a bank account by id from the database")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = BankAccount.class),
-            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorStub.class),
-            @ApiResponse(code = 403, message = "Forbidden", response = ErrorStub.class),
-            @ApiResponse(code = 404, message = "Not found", response = ErrorStub.class),
-            @ApiResponse(code = 500, message = "Server failure", response = ErrorStub.class)
+            @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
+            @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
+            @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
+            @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @DeleteMapping(value = "/{accountId}", produces = {"application/json"})
     public ResponseEntity<BankAccountDTO> deleteBankAccount(@PathVariable Long accountId) {
         log.info("DELETE-ing bank account {}", accountId);
-        return ResponseEntity.of(
-                service.deleteBankAccount(accountId));
+        Optional<BankAccountDTO> result = service.deleteBankAccount(accountId);
+        if (result.isEmpty()) {
+            throw new BankException("Could not delete bank account with id: " + accountId);
+        }
+        return ResponseEntity.of(result);
     }
 }
