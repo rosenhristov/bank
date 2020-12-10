@@ -1,10 +1,12 @@
 package com.rosenhristov.bank.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+@Slf4j
 @ControllerAdvice
 public class BankAppExceptionHandler {
 
@@ -23,9 +25,22 @@ public class BankAppExceptionHandler {
     }
 
     private String buildDescription(Exception e) {
-        return String.format("%s occurred.\nMessage: %s.\nStack trace:\n%s",
-                e.getClass().getSimpleName(),
-                e.getMessage(),
-                e.getStackTrace().toString());
+        String exception = String.format("Exception occurred: %s\n", e.getClass().getSimpleName());
+        String message = String.format("Exception Message:\n%s\n", e.getMessage());
+        String stacktrace = String.format("Exception stack trace:\n%s", stackTraceToString(e));
+        String description = new StringBuilder(exception)
+                                .append(message)
+                                .append(stacktrace)
+                                .toString();
+        log.error(exception + message, e);
+        return description;
+    }
+
+    private String stackTraceToString(Exception e) {
+        StringBuilder builder = new StringBuilder();
+        for (StackTraceElement el : e.getStackTrace()) {
+            builder.append(el.toString()).append("\n");
+        }
+        return builder.toString();
     }
 }
