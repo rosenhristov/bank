@@ -13,34 +13,16 @@ public class BankAppExceptionHandler {
     @ExceptionHandler(BankException.class)
     public ResponseEntity<ErrorResponse> handleBankException(BankException e) {
         return new ResponseEntity<>(
-                new ErrorResponse(HttpStatus.NOT_FOUND.value(), buildDescription(e)),
-                HttpStatus.NOT_FOUND);
+                new ErrorResponse(HttpStatus.BAD_REQUEST, e),
+                HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         return new ResponseEntity<>(
-                new ErrorResponse(HttpStatus.BAD_REQUEST.value(), buildDescription(e)),
-                HttpStatus.BAD_REQUEST);
+                new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e),
+                HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private String buildDescription(Exception e) {
-        String exception = String.format("Exception occurred: %s\n", e.getClass().getSimpleName());
-        String message = String.format("Exception Message:\n%s\n", e.getMessage());
-        String stacktrace = String.format("Exception stack trace:\n%s", stackTraceToString(e));
-        String description = new StringBuilder(exception)
-                                .append(message)
-                                .append(stacktrace)
-                                .toString();
-        log.error(exception + message, e);
-        return description;
-    }
 
-    private String stackTraceToString(Exception e) {
-        StringBuilder builder = new StringBuilder();
-        for (StackTraceElement el : e.getStackTrace()) {
-            builder.append(el.toString()).append("\n");
-        }
-        return builder.toString();
-    }
 }
