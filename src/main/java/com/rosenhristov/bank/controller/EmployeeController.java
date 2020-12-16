@@ -8,6 +8,9 @@ import com.rosenhristov.bank.service.EmployeeService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,9 +37,13 @@ public class EmployeeController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<List<EmployeeDTO>> getAll() {
+    public CollectionModel<EntityModel<EmployeeDTO>> getAll() {
         log.info("GETting all employees");
-        return ResponseEntity.of(Optional.of(service.getAll()));
+        return (CollectionModel<EntityModel<EmployeeDTO>>)
+                CollectionModel.of(
+                        EntityModel.of(
+                                service.getAll(),
+                                List.of(Link.of("http://localhost:8080/bank/employees/employeeId"))));
     }
 
 
@@ -49,13 +56,15 @@ public class EmployeeController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/{employeeId}", produces = {"application/json"})
-    public ResponseEntity<EmployeeDTO> getEmployeeById(@PathVariable Long employeeId) {
+    public EntityModel<EmployeeDTO> getEmployeeById(@PathVariable Long employeeId) {
         log.info("GETting employee with id {}", employeeId);
         Optional<EmployeeDTO> result = service.getEmployeeById(employeeId);
         if (result.isEmpty()) {
             throw new BankException("Could not find employee with id: " + employeeId);
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                List.of(Link.of("http://localhost:8080/bank/")));
     }
 
 
@@ -69,7 +78,7 @@ public class EmployeeController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PostMapping(value = "/", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<EmployeeDTO> addEmployee(@Valid @RequestBody EmployeeDTO newEmployee) {
+    public EntityModel<EmployeeDTO> addEmployee(@Valid @RequestBody EmployeeDTO newEmployee) {
         log.info("INSERTing employee {} {}",
                 newEmployee.getName(),
                 newEmployee.getSurname());
@@ -80,9 +89,9 @@ public class EmployeeController {
             throw new BankException(String.format(
                     "Could not save employee %s %s", newEmployee.getName(), newEmployee.getSurname()));
         }
-        return ResponseEntity.of(
-                Optional.ofNullable(service.save(
-                        service.getMapper().toEntity(newEmployee))));
+        return EntityModel.of(
+                result.get(),
+                List.of(Link.of("http://localhost:8080/bank/employees/employeeId")));
     }
 
 
@@ -136,12 +145,14 @@ public class EmployeeController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @DeleteMapping(value = "/{employeeId}", produces = {"application/json"})
-    public ResponseEntity<EmployeeDTO> deleteEmployee(@PathVariable Long employeeId) {
+    public EntityModel<EmployeeDTO> deleteEmployee(@PathVariable Long employeeId) {
         log.info("DELETE-ing bank account {}", employeeId);
         Optional<EmployeeDTO> result = service.deleteEmployee(employeeId);
         if (result.isEmpty()) {
             throw new BankException("Could not delete employee with id: " + employeeId);
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                List.of(Link.of("http://localhost:8080/bank/employees/")));
     }
 }

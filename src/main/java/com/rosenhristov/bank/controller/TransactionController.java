@@ -7,8 +7,11 @@ import com.rosenhristov.bank.exception.ErrorResponse;
 import com.rosenhristov.bank.service.TransactionService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +22,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/transactions")
 @AllArgsConstructor
+@NoArgsConstructor
 @Api(value = "Operations related to financial transactions", tags = {"Transactions"})
 @SwaggerDefinition(tags = {@Tag(name = "Transactions", description = "Operations related to financial transactions")})
 public class TransactionController {
@@ -34,10 +38,12 @@ public class TransactionController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<List<TransactionDTO>> getAll() {
+    public CollectionModel<EntityModel<TransactionDTO>> getAll() {
         log.info("GETting all transactions");
-        return ResponseEntity.of(
-                Optional.of(service.getAll()));
+        return (CollectionModel<EntityModel<TransactionDTO>>)
+                CollectionModel.of(
+                        EntityModel.of(service.getAll()),
+                        List.of(Link.of("http://localhost:8080/bank/transactions/transactionId/")));
     }
 
     @ApiOperation(value="Fetch a financial transaction by id",
@@ -50,13 +56,15 @@ public class TransactionController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/{transactionId}", produces = {"application/json"})
-    public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long transactionId) {
+    public EntityModel<TransactionDTO> getTransactionById(@PathVariable Long transactionId) {
         log.info("GETting transaction with id = {}", transactionId);
         Optional<TransactionDTO> result = service.getTransactionById(transactionId);
         if (result.isEmpty()) {
             throw new BankException("Could not find bank account with id: " + transactionId);
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                Link.of("http://localhost:8080/bank/transactions/"));
     }
 
     @ApiOperation(
@@ -70,7 +78,7 @@ public class TransactionController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PostMapping(value = "/", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<TransactionDTO> addTransaction(@Valid @RequestBody TransactionDTO newTransaction) {
+    public EntityModel<TransactionDTO> addTransaction(@Valid @RequestBody TransactionDTO newTransaction) {
         log.info("INSERTing transaction");
         Optional<TransactionDTO> result = Optional.ofNullable(
                 service.save(
@@ -79,7 +87,9 @@ public class TransactionController {
             throw new BankException(String.format("Could not save transaction between accounts %s and %s",
                     newTransaction.getSender(), newTransaction.getReceiver()));
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                Link.of("http://localhost:8080/bank/transactions/"));
     }
 
     @ApiOperation(
@@ -94,26 +104,28 @@ public class TransactionController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PutMapping(value = "/{transactionId}", consumes = {"application/json"}, produces = {"application/json"})
-    public  ResponseEntity<TransactionDTO> updateTransaction(@Valid @RequestBody TransactionDTO newTransaction,
+    public  EntityModel<TransactionDTO> updateTransaction(@Valid @RequestBody TransactionDTO newTransaction,
                                                              @PathVariable Long transactionId) {
         log.info("UPDATE-ing transaction with id = {}", transactionId);
         Optional<TransactionDTO> result = service.getTransactionById(transactionId);
         if (result.isEmpty()) {
             throw new BankException("Could not find transaction with id: " + transactionId);
         }
-        return ResponseEntity.of(
-                result.map(transaction -> {
-                    transaction.setAmount(newTransaction.getAmount());
-                    transaction.setSender(newTransaction.getSender());
-                    transaction.setReceiver(newTransaction.getReceiver());
-                    Optional<TransactionDTO> dto = Optional.ofNullable(
-                            service.save(
-                                    service.getMapper().toEntity(transaction)));
-                    if (dto.isEmpty()) {
-                        throw new BankException("Could not update transaction with id: " + transactionId);
-                    }
-                    return dto.get();
-                }));
+        return EntityModel.of(
+                result.map(
+                        transaction -> {
+                            transaction.setAmount(newTransaction.getAmount());
+                            transaction.setSender(newTransaction.getSender());
+                            transaction.setReceiver(newTransaction.getReceiver());
+                            Optional<TransactionDTO> dto = Optional.ofNullable(
+                                    service.save(
+                                            service.getMapper().toEntity(transaction)));
+                            if (dto.isEmpty()) {
+                                throw new BankException("Could not update transaction with id: " + transactionId);
+                            }
+                            return dto.get();
+                        }).get(),
+                List.of(Link.of("http://localhost:8080/bank/transactions/")));
     }
 
     @ApiOperation(value="Delete a financial transaction with indicated id",
@@ -126,12 +138,14 @@ public class TransactionController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @DeleteMapping(value = "/{transactionId}", produces = {"application/json"})
-    public ResponseEntity<TransactionDTO> deleteTransaction(@PathVariable Long transactionId) {
+    public EntityModel<TransactionDTO> deleteTransaction(@PathVariable Long transactionId) {
         log.info("DELETE-ing transaction id = {}", transactionId);
         Optional<TransactionDTO> result = service.deleteTransaction(transactionId);
         if (result.isEmpty()) {
             throw new BankException("Could not delete bank account with id: " + transactionId);
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                List.of(Link.of("http://localhost:8080/bank/transactions/")));
     }
 }
