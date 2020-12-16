@@ -8,7 +8,10 @@ import com.rosenhristov.bank.service.BankAccountService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,10 +36,14 @@ public class BankAccountController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<List<BankAccountDTO>> getAll() {
+    public CollectionModel<EntityModel<BankAccountDTO>> getAll() {
         log.info("GETting all bank accounts");
-        return ResponseEntity.of(Optional.of(service.getAll()));
+        return (CollectionModel<EntityModel<BankAccountDTO>>)
+                CollectionModel.of(
+                        EntityModel.of(service.getAll()),
+                        List.of(Link.of("http://localhost:8080/bank/accounts/accountId")));
     }
 
 
@@ -48,14 +55,17 @@ public class BankAccountController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{accountId}", produces = {"application/json"})
-    public ResponseEntity<BankAccountDTO> getBankAccountById(@PathVariable Long accountId) {
+    public EntityModel<BankAccountDTO> getBankAccountById(@PathVariable Long accountId) {
         log.info("GETting BankAccount with id {}", accountId);
         Optional<BankAccountDTO> result = service.getBankAccountById(accountId);
         if (result.isEmpty()) {
             throw new BankException("Could not find bank account with id: " + accountId);
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                Link.of("http://localhost:8080/bank/accounts/"));
     }
 
 
@@ -68,8 +78,9 @@ public class BankAccountController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<BankAccountDTO> addBankAccount(@Valid @RequestBody BankAccountDTO newAccount) {
+    public EntityModel<BankAccountDTO> addBankAccount(@Valid @RequestBody BankAccountDTO newAccount) {
         log.info("INSERTing bank account {}", newAccount.getAccountNumber());
         Optional<BankAccountDTO> result = Optional.ofNullable(
                 service.save(
@@ -77,7 +88,9 @@ public class BankAccountController {
         if (result.isEmpty()) {
             throw new BankException("Could not save bank account with accountNumber: " + newAccount.getAccountNumber());
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                Link.of("http://localhost:8080/bank/accounts/"));
     }
 
 
@@ -90,31 +103,35 @@ public class BankAccountController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{accountId}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<BankAccountDTO> updateBankAccount(@Valid @RequestBody BankAccountDTO newAccount,
+    public EntityModel<BankAccountDTO> updateBankAccount(@Valid @RequestBody BankAccountDTO newAccount,
                                                             @PathVariable Long accountId) {
         log.info("UPDATE-ing bank account with id: {}", accountId);
         Optional<BankAccountDTO> result = service.getBankAccountById(accountId);
         if (result.isEmpty()) {
             throw new BankException("Could not find bank account with id: " + accountId);
         }
-        return ResponseEntity.of(
-                result.map(account -> {
-                    account.setAccountNumber(newAccount.getAccountNumber());
-                    account.setIban(newAccount.getIban());
-                    account.setType(newAccount.getType());
-                    account.setCurrency(newAccount.getCurrency());
-                    account.setBalance(newAccount.getBalance());
-                    account.setClient(newAccount.getClient());
-                    account.setAccountManager(newAccount.getAccountManager());
-                    Optional<BankAccountDTO> dto = Optional.ofNullable(
-                            service.save(
-                                    service.getMapper().toEntity(account)));
-                    if (dto.isEmpty()) {
-                        throw new BankException("Could not update bank account with id: " + accountId);
-                    }
-                    return dto.get();
-                }));
+        return EntityModel.of(
+                result.map(
+                        account -> {
+                            account.setAccountNumber(newAccount.getAccountNumber());
+                            account.setIban(newAccount.getIban());
+                            account.setType(newAccount.getType());
+                            account.setCurrency(newAccount.getCurrency());
+                            account.setBalance(newAccount.getBalance());
+                            account.setClient(newAccount.getClient());
+                            account.setAccountManager(newAccount.getAccountManager());
+                            Optional<BankAccountDTO> dto = Optional.ofNullable(
+                                    service.save(
+                                            service.getMapper().toEntity(account)));
+                            if (dto.isEmpty()) {
+                                throw new BankException("Could not update bank account with id: " + accountId);
+                            }
+                            return dto.get();
+                        }).get(),
+                List.of(Link.of("http://localhost:8080/bank/accounts/"))
+        );
     }
 
 
@@ -128,13 +145,16 @@ public class BankAccountController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping(value = "/{accountId}", produces = {"application/json"})
-    public ResponseEntity<BankAccountDTO> deleteBankAccount(@PathVariable Long accountId) {
+    public EntityModel<BankAccountDTO> deleteBankAccount(@PathVariable Long accountId) {
         log.info("DELETE-ing bank account {}", accountId);
         Optional<BankAccountDTO> result = service.deleteBankAccount(accountId);
         if (result.isEmpty()) {
             throw new BankException("Could not delete bank account with id: " + accountId);
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                List.of(Link.of("http://localhost:8080/bank/accounts/")));
     }
 }

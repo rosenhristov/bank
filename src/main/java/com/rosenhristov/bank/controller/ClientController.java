@@ -8,7 +8,9 @@ import com.rosenhristov.bank.service.ClientService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -34,11 +36,13 @@ public class ClientController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<List<ClientDTO>> getAll() {
+    public EntityModel<List<ClientDTO>> getAll() {
         log.info("GETting all clients");
-        return ResponseEntity.of(
-                Optional.of(service.getAll()));
+        return EntityModel.of(
+                service.getAll(),
+                List.of(Link.of("http://localhost:8080/bank/clients/clientId/")));
     }
 
 
@@ -51,14 +55,17 @@ public class ClientController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{clientId}", produces = {"application/json"})
-    public ResponseEntity<ClientDTO> getClientById(@PathVariable Long clientId) {
+    public EntityModel<ClientDTO> getClientById(@PathVariable Long clientId) {
         log.info("GETting client with id = {}", clientId);
         Optional<ClientDTO> result = service.getClientById(clientId);
         if (result.isEmpty()) {
             throw new BankException("Could not find client with id: " + clientId);
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                List.of(Link.of("http://localhost:8080/bank/clients/")));
     }
 
 
@@ -74,8 +81,9 @@ public class ClientController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(value = "/", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<ClientDTO> addCustomer(@Valid @RequestBody ClientDTO newClient) {
+    public EntityModel<ClientDTO> addCustomer(@Valid @RequestBody ClientDTO newClient) {
         Optional<ClientDTO> result = Optional.ofNullable(
                 service.save(
                         service.getMapper().toEntity(newClient)));
@@ -83,7 +91,9 @@ public class ClientController {
             throw new BankException(String.format("Could not save client %s %s",
                     newClient.getName(), newClient.getSurname()));
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                List.of(Link.of("http://localhost:8080/bank/clients/clientId")));
     }
 
 
@@ -96,15 +106,16 @@ public class ClientController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping(value = "/{clientId}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<ClientDTO> updateClient(@Valid @RequestBody ClientDTO newClient,
+    public EntityModel<ClientDTO> updateClient(@Valid @RequestBody ClientDTO newClient,
                                                   @PathVariable Long clientId) {
         log.info("UPDATE-ing client with id = {}", clientId);
         Optional<ClientDTO> result = service.getClientById(clientId);
         if (result.isEmpty()) {
             throw new BankException("Could not find client with id = " + clientId);
         }
-        return ResponseEntity.of(
+        return EntityModel.of(
                 result.map(client -> {
                     client.setName(newClient.getName());
                     client.setMidName(newClient.getMidName());
@@ -126,7 +137,8 @@ public class ClientController {
                         throw new BankException("Could not update client with id: " + clientId);
                     }
                     return dto.get();
-                }));
+                }).get(),
+                List.of(Link.of("http://localhost:8080/bank/clients/")));
     }
 
     @ApiOperation(value="Delete a client with indicated id",
@@ -138,13 +150,16 @@ public class ClientController {
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping(value = "/{clientId}", produces = {"application/json"})
-    public ResponseEntity<ClientDTO> deleteClient(@PathVariable Long clientId) {
+    public EntityModel<ClientDTO> deleteClient(@PathVariable Long clientId) {
         log.info("DELETE-ing bank account {}", clientId);
         Optional<ClientDTO> result = service.deleteClient(clientId);
         if (result.isEmpty()) {
             throw new BankException("Could not delete client with id = " + clientId);
         }
-        return ResponseEntity.of(result);
+        return EntityModel.of(
+                result.get(),
+                List.of(Link.of("http://localhost:8080/bank/clients/")));
     }
 }
