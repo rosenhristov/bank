@@ -1,14 +1,20 @@
 package com.rosenhristov.bank.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Data
-public class ClientDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
+public class ClientDTO extends BaseDTO {
 
     private Long id;
 
@@ -25,7 +31,8 @@ public class ClientDTO {
     @Email(regexp = "[\\w.-]+@[\\w.-]+.[.\\w-]+", message = "Email should be of pattern: 'username@domain.com'")
     private String email;
 
-    private AddressDTO address;
+    @NotNull(message = "Client address must not be empty")
+    private String address;
 
     @NotNull(message = "ID card number must not be empty")
     private Long idCardNumber;

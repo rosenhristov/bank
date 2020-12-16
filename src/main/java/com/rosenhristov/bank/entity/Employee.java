@@ -2,24 +2,27 @@ package com.rosenhristov.bank.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.io.Serializable;
 import java.math.BigInteger;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "employee")
 @ApiModel(description = "The model for a bank employee")
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class Employee extends BaseEntity implements Serializable {
+public class Employee extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_Sequence")
@@ -75,7 +78,7 @@ public class Employee extends BaseEntity implements Serializable {
     @Column(name = "address")
     @ApiModelProperty(name = "address", value = "the addresss of an employee",
                       dataType = "String", example = "1000 Sofia, 10 Dondoukov Str.")
-    private Address address;
+    private String address;
 
     @NotNull(message = "Employee's date of hiring must not be empty")
     @Column(name = "date_hired")

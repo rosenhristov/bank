@@ -8,6 +8,7 @@ import com.rosenhristov.bank.entity.Client;
 import com.rosenhristov.bank.entity.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.dozer.DozerBeanMapper;
+import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,27 @@ import java.util.stream.Collectors;
 @Component
 public class BankAccountMapper extends BaseMapper {
 
+    private BeanMappingBuilder builder = new BeanMappingBuilder() {
+        @Override
+        protected void configure() {
+            mapping(BankAccount.class, BankAccountDTO.class)
+                    .fields("id", "id")
+                    .fields("accountNumber", "accountNumber")
+                    .fields("iban", "iban")
+                    .fields("type", "type")
+                    .fields("currency", "currency")
+                    .fields("balance", "balance")
+                    .fields("client", "client")
+                    .fields("accountManager", "accountManager")
+                    .fields("dateCreated", "dateCreated")
+                    .fields("dateUpdated", "dateUpdated");
+        }
+    };
+
     @Autowired
     public BankAccountMapper(DozerBeanMapper mapper) {
         super(mapper);
+        mapper.addMapping(builder);
     }
 
     public BankAccountDTO toDto(BankAccount account) {

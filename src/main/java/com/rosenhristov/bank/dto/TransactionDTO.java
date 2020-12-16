@@ -1,13 +1,19 @@
 package com.rosenhristov.bank.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-public class TransactionDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
+public class TransactionDTO extends BaseDTO {
 
     private Long id;
 

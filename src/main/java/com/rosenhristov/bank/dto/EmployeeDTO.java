@@ -1,15 +1,21 @@
 package com.rosenhristov.bank.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.math.BigInteger;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Data
-public class EmployeeDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
+public class EmployeeDTO extends BaseDTO {
 
     private Long id;
 
@@ -34,7 +40,7 @@ public class EmployeeDTO {
     private String email;
 
     @NotNull(message = "Employee address must not be empty")
-    private AddressDTO address;
+    private String address;
 
     @NotNull(message = "Employee's date of hiring must not be empty")
     private Date dateHired;

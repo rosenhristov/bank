@@ -8,13 +8,16 @@ import javax.persistence.Column;
 import javax.persistence.PrePersist;
 import javax.persistence.PreRemove;
 import javax.persistence.PreUpdate;
-import java.util.Date;
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
+import java.sql.Date;
 
 @Data
+public class BaseEntity implements Serializable {
 
-public class BaseEntity {
+    protected static final long serialVersionUID = 1L;
 
-//    @NotNull(message = "Creation date must not be empty")
+    @NotNull(message = "Creation date must not be empty")
     @ApiModelProperty(name = "dateCreated", value = "Date of creation in bank's system",
             dataType = "Date", example = "2020-08-20")
     @Column(name = "created_at")
@@ -41,11 +44,11 @@ public class BaseEntity {
     }
 
     protected void doPrePersist() {
-        this.setDateCreated(Utils.dateNow());
+        this.setDateCreated(Utils.sqlDateNow());
     }
 
     protected void doPreUpdate() {
-        this.setDateUpdated(Utils.dateNow());
+        this.setDateUpdated(Utils.sqlDateNow());
     }
 
     protected void doPreRemove() {

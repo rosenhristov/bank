@@ -2,23 +2,26 @@ package com.rosenhristov.bank.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "client")
 @ApiModel(description = "The model for a bank customer")
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Client extends BaseEntity implements Serializable {
+public class Client extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_Sequence")
@@ -58,10 +61,11 @@ public class Client extends BaseEntity implements Serializable {
     @ApiModelProperty(name = "email", value = "the email of a client", dataType = "String", example = "username@company.com")
     private String email;
 
+    @NotNull(message = "Client address must not be empty")
     @Column(name = "address")
     @ApiModelProperty(name = "address", value = "the addresss of a client", dataType = "String",
             example = "1000 Sofia, 10 Dondoukov Str.")
-    private Address address;
+    private String address;
 
     @NotNull(message = "ID card number must not be empty")
     @Column(name = "id_card_number")
@@ -106,9 +110,6 @@ public class Client extends BaseEntity implements Serializable {
     @ApiModelProperty(name = "creditCardNumber", value = "a client's credit card number",
                       dataType = "Long", example = "5220479568150000")
     private Long creditCardNumber;
-
-    @Column(name = "updated_at")
-    private Date updatedAt;
 
     @Override
     protected void doPreRemove() {

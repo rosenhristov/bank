@@ -2,12 +2,13 @@ package com.rosenhristov.bank.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Currency;
 
@@ -15,8 +16,10 @@ import java.util.Currency;
 @Entity
 @Table(name = "bank_account")
 @ApiModel(description = "Model for bank account")
+@AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class BankAccount extends BaseEntity implements Serializable {
+public class BankAccount extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_Sequence")

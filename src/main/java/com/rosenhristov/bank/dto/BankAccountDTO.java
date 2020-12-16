@@ -1,14 +1,20 @@
 package com.rosenhristov.bank.dto;
 
 import com.rosenhristov.bank.entity.AccountType;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Currency;
 
 @Data
-public class BankAccountDTO {
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(callSuper=true)
+public class BankAccountDTO extends BaseDTO {
 
     private Long id;
 

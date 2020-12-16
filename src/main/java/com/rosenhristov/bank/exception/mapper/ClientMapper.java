@@ -1,13 +1,12 @@
 package com.rosenhristov.bank.exception.mapper;
 
-import com.rosenhristov.bank.dto.AddressDTO;
 import com.rosenhristov.bank.dto.ClientDTO;
 import com.rosenhristov.bank.dto.EmployeeDTO;
-import com.rosenhristov.bank.entity.Address;
 import com.rosenhristov.bank.entity.Client;
 import com.rosenhristov.bank.entity.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.dozer.DozerBeanMapper;
+import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +17,34 @@ import java.util.stream.Collectors;
 @Component
 public class ClientMapper extends BaseMapper {
 
+    private BeanMappingBuilder builder = new BeanMappingBuilder() {
+        @Override
+        protected void configure() {
+            mapping(Client.class, ClientDTO.class)
+                    .fields("id", "id")
+                    .fields("name", "name")
+                    .fields("midName", "midName")
+                    .fields("surname", "surname")
+//                    .exclude("password")
+                    .fields("phone", "phone")
+                    .fields("email", "email")
+                    .fields("address", "address")
+                    .fields("idCardNumber", "idCardNumber")
+                    .fields("idCardIssueDate", "idCardIssueDate")
+                    .fields("idCardExpirationDate", "idCardExpirationDate")
+                    .fields("bankAccounts", "bankAccounts")
+                    .fields("accountManager", "accountManager")
+                    .fields("debitCardNumber", "debitCardNumber")
+                    .fields("creditCardNumber", "creditCardNumber")
+                    .fields("dateCreated", "dateCreated")
+                    .fields("dateUpdated", "dateUpdated");
+        }
+    };
+
     @Autowired
     public ClientMapper(DozerBeanMapper mapper) {
         super(mapper);
+        mapper.addMapping(builder);
     }
 
     public ClientDTO toDto(Client entity) {
@@ -69,29 +93,5 @@ public class ClientMapper extends BaseMapper {
         return dtos.stream()
                 .map(dto -> toEmployeeEntity(dto))
                 .collect(Collectors.toList());
-    }
-
-    public AddressDTO toAddressDto(Address entity) {
-        log.info("Mapping Address entity to DTO");
-        return mapper.map(entity, AddressDTO.class);
-    }
-
-    public Address toAddressEntity(AddressDTO dto) {
-        log.info("Mapping Address DTO to entity");
-        return mapper.map(dto, Address.class);
-    }
-
-    public List<AddressDTO> toAddressDtos(List<Address> entities) {
-        log.info("Mapping Address entities to DTOs");
-        return entities.stream()
-                .map(entity -> toAddressDto(entity))
-                .collect(Collectors.toList());
-    }
-
-    public List<Address> toAddressEntities(List<AddressDTO> dtos) {
-        log.info("Mapping Address DTOs to entities");
-        return dtos.stream()
-                   .map(dto -> toAddressEntity(dto))
-                   .collect(Collectors.toList());
     }
 }
