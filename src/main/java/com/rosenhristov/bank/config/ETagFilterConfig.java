@@ -5,6 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.ShallowEtagHeaderFilter;
 
+import javax.servlet.DispatcherType;
+import java.util.EnumSet;
+
 @Configuration
 public class ETagFilterConfig {
 
@@ -12,8 +15,9 @@ public class ETagFilterConfig {
     public FilterRegistrationBean getEtagClintRequestFilter() {
         FilterRegistrationBean<ShallowEtagHeaderFilter> filterRegistrationBean
                 = new FilterRegistrationBean<>(new ShallowEtagHeaderFilter());
+        filterRegistrationBean.setDispatcherTypes(EnumSet.of(DispatcherType.REQUEST, DispatcherType.ASYNC));
         filterRegistrationBean.addUrlPatterns("/bank/*");
-        filterRegistrationBean.setName("etagFilter");
+        filterRegistrationBean.setName("ETagFilter");
         return filterRegistrationBean;
     }
 }
