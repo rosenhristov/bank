@@ -6,7 +6,6 @@ import com.rosenhristov.bank.entity.BankAccount;
 import com.rosenhristov.bank.entity.Transaction;
 import lombok.extern.slf4j.Slf4j;
 import org.dozer.DozerBeanMapper;
-import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,23 +16,9 @@ import java.util.stream.Collectors;
 @Component
 public class TransactionMapper extends BaseMapper {
 
-    private BeanMappingBuilder builder = new BeanMappingBuilder() {
-        @Override
-        protected void configure() {
-            mapping(Transaction.class, TransactionDTO.class)
-                    .fields("id", "id")
-                    .fields("amount", "amount")
-                    .fields("sender", "sender")
-                    .fields("receiver", "receiver")
-                    .fields("dateCreated", "dateCreated")
-                    .fields("dateUpdated", "dateUpdated");
-        }
-    };
-
     @Autowired
     public TransactionMapper(DozerBeanMapper mapper) {
         super(mapper);
-        mapper.addMapping(builder);
     }
 
     public TransactionDTO toDto(Transaction entity) {

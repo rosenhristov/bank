@@ -6,7 +6,6 @@ import com.rosenhristov.bank.entity.Client;
 import com.rosenhristov.bank.entity.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.dozer.DozerBeanMapper;
-import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,33 +16,9 @@ import java.util.stream.Collectors;
 @Component
 public class EmployeeMapper extends BaseMapper {
 
-    private BeanMappingBuilder builder = new BeanMappingBuilder() {
-        @Override
-        protected void configure() {
-            mapping(Employee.class, EmployeeDTO.class)
-                    .fields("id", "id")
-                    .fields("name", "name")
-                    .fields("midName", "midName")
-                    .fields("surname", "surname")
-                    .exclude("password")
-                    .fields("position", "position")
-                    .fields("salary", "salary")
-                    .fields("phone", "phone")
-                    .fields("email", "email")
-                    .fields("address", "address")
-                    .fields("dateHired", "dateHired")
-                    .fields("startOfExperience", "startOfExperience")
-                    .fields("clients", "clients")
-                    .fields("accounts", "accounts")
-                    .fields("dateCreated", "dateCreated")
-                    .fields("dateUpdated", "dateUpdated");
-        }
-    };
-
     @Autowired
     public EmployeeMapper(DozerBeanMapper mapper) {
         super(mapper);
-        mapper.addMapping(builder);
     }
 
     public EmployeeDTO toDto(Employee entity) {

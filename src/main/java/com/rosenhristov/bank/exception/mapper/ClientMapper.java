@@ -6,7 +6,6 @@ import com.rosenhristov.bank.entity.Client;
 import com.rosenhristov.bank.entity.Employee;
 import lombok.extern.slf4j.Slf4j;
 import org.dozer.DozerBeanMapper;
-import org.dozer.loader.api.BeanMappingBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -17,34 +16,9 @@ import java.util.stream.Collectors;
 @Component
 public class ClientMapper extends BaseMapper {
 
-    private BeanMappingBuilder builder = new BeanMappingBuilder() {
-        @Override
-        protected void configure() {
-            mapping(Client.class, ClientDTO.class)
-                    .fields("id", "id")
-                    .fields("name", "name")
-                    .fields("midName", "midName")
-                    .fields("surname", "surname")
-//                    .exclude("password")
-                    .fields("phone", "phone")
-                    .fields("email", "email")
-                    .fields("address", "address")
-                    .fields("idCardNumber", "idCardNumber")
-                    .fields("idCardIssueDate", "idCardIssueDate")
-                    .fields("idCardExpirationDate", "idCardExpirationDate")
-                    .fields("bankAccounts", "bankAccounts")
-                    .fields("accountManager", "accountManager")
-                    .fields("debitCardNumber", "debitCardNumber")
-                    .fields("creditCardNumber", "creditCardNumber")
-                    .fields("dateCreated", "dateCreated")
-                    .fields("dateUpdated", "dateUpdated");
-        }
-    };
-
     @Autowired
     public ClientMapper(DozerBeanMapper mapper) {
         super(mapper);
-        mapper.addMapping(builder);
     }
 
     public ClientDTO toDto(Client entity) {
