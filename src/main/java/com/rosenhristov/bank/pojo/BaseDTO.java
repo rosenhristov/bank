@@ -1,4 +1,4 @@
-package com.rosenhristov.bank.dto;
+package com.rosenhristov.bank.pojo;
 
 
 import java.io.Serializable;

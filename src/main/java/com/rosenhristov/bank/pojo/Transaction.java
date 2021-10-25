@@ -1,4 +1,4 @@
-package com.rosenhristov.bank.dto;
+package com.rosenhristov.bank.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,7 +13,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class TransactionDTO extends BaseDTO {
+public class Transaction extends BaseDTO {
 
     private Long id;
 
@@ -21,10 +21,10 @@ public class TransactionDTO extends BaseDTO {
     private BigDecimal amount;
 
     @NotNull(message = "Transaction sender must not be empty")
-    private BankAccountDTO sender;
+    private BankAccount sender;
 
     @NotNull(message = "Transaction receiver must not be empty")
-    private BankAccountDTO receiver;
+    private BankAccount receiver;
 
     @NotNull(message = "Transaction's date of creation must not be empty")
     private Date createdAt;

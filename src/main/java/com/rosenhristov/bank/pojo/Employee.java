@@ -1,4 +1,4 @@
-package com.rosenhristov.bank.dto;
+package com.rosenhristov.bank.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class EmployeeDTO extends BaseDTO {
+public class Employee extends BaseDTO {
 
     private Long id;
 
@@ -48,7 +48,7 @@ public class EmployeeDTO extends BaseDTO {
     @NotNull(message = "Employee's start of experience must not be empty")
     private Date startOfExperience;
 
-    List<ClientDTO> clients;
+    List<Client> clients;
 
-    List<BankAccountDTO> accounts;
+    List<BankAccount> accounts;
 }

@@ -1,4 +1,4 @@
-package com.rosenhristov.bank.dto;
+package com.rosenhristov.bank.pojo;
 
 import com.rosenhristov.bank.entity.AccountType;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.Currency;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class BankAccountDTO extends BaseDTO {
+public class BankAccount extends BaseDTO {
 
     private Long id;
 
@@ -32,7 +32,7 @@ public class BankAccountDTO extends BaseDTO {
     @NotNull(message = "Balance must not be empty")
     private BigDecimal balance;
 
-    protected ClientDTO client;
+    protected Client client;
 
-    private EmployeeDTO accountManager;
+    private Employee accountManager;
 }
