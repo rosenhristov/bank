@@ -1,7 +1,7 @@
 package com.rosenhristov.bank.service;
 
-import com.rosenhristov.bank.dto.BankAccountDTO;
-import com.rosenhristov.bank.entity.BankAccount;
+import com.rosenhristov.bank.pojo.BankAccount;
+import com.rosenhristov.bank.entity.BankAccountEntity;
 import com.rosenhristov.bank.exception.mapper.BankAccountMapper;
 import com.rosenhristov.bank.repository.BankAccountRepository;
 import lombok.AllArgsConstructor;
@@ -19,29 +19,29 @@ public class BankAccountService {
     private final BankAccountRepository bankAccountRepository;
     private final BankAccountMapper mapper;
 
-    public Optional<BankAccountDTO> getBankAccountById(Long id) {
+    public Optional<BankAccount> getBankAccountById(Long id) {
         log.info("Retrieving bank account with id = {} from database", id);
         return bankAccountRepository
                 .findById(id)
                 .map(entity -> mapper.toDto(entity));
     }
 
-    public List<BankAccountDTO> getAll() {
+    public List<BankAccount> getAll() {
         log.info("Retrieving all bank accounts from database.");
-        return mapper.toDtos(bankAccountRepository.findAll());
+        return mapper.toDtos((List<BankAccountEntity>) bankAccountRepository.findAll());
     }
 
-    public BankAccountDTO save(BankAccount bankAccount) {
-        log.info("Saving bank account {} to database", bankAccount.getAccountNumber());
-        return mapper.toDto(bankAccountRepository.save(bankAccount));
+    public BankAccount save(BankAccountEntity bankAccountEntity) {
+        log.info("Saving bank account {} to database", bankAccountEntity.getAccountNumber());
+        return mapper.toDto(bankAccountRepository.save(bankAccountEntity));
     }
 
-    public List<BankAccountDTO> saveAll(List<BankAccount> bankAccounts) {
+    public List<BankAccount> saveAll(List<BankAccountEntity> bankAccountEntities) {
         log.info("Saving all bank accounts to database.");
-        return mapper.toDtos(bankAccountRepository.saveAll(bankAccounts));
+        return mapper.toDtos((List<BankAccountEntity>) bankAccountRepository.saveAll(bankAccountEntities));
     }
 
-    public Optional<BankAccountDTO> deleteBankAccount(Long id) {
+    public Optional<BankAccount> deleteBankAccount(Long id) {
         log.info("Deleting bank account with id = {} from database", id);
         return bankAccountRepository
                 .removeAccountById(id)

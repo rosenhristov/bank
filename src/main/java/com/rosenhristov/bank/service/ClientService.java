@@ -1,11 +1,11 @@
 package com.rosenhristov.bank.service;
 
-import com.rosenhristov.bank.dto.BankAccountDTO;
-import com.rosenhristov.bank.dto.ClientDTO;
-import com.rosenhristov.bank.dto.EmployeeDTO;
-import com.rosenhristov.bank.entity.BankAccount;
-import com.rosenhristov.bank.entity.Client;
-import com.rosenhristov.bank.entity.Employee;
+import com.rosenhristov.bank.pojo.BankAccount;
+import com.rosenhristov.bank.pojo.Client;
+import com.rosenhristov.bank.pojo.Employee;
+import com.rosenhristov.bank.entity.BankAccountEntity;
+import com.rosenhristov.bank.entity.ClientEntity;
+import com.rosenhristov.bank.entity.EmployeeEntity;
 import com.rosenhristov.bank.exception.mapper.BankAccountMapper;
 import com.rosenhristov.bank.exception.mapper.ClientMapper;
 import com.rosenhristov.bank.exception.mapper.EmployeeMapper;
@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,59 +32,54 @@ public class ClientService {
     private EmployeeRepository employeeRepository;
     private BankAccountRepository bankAccountRepository;
 
-    public Optional<ClientDTO> getClientById(Long id) {
+    public Optional<Client> getClientById(Long id) {
         log.info("Retrieving client with id = {} from database", id);
-        Optional<Client> clientOpt =  clientRepository.findById(id);
+        Optional<ClientEntity> clientOpt =  clientRepository.findById(id);
         if (clientOpt.isEmpty()) {
             return Optional.empty();
         }
-        Client client = clientOpt.get();
-        ClientDTO dto = mapper.toDto(clientOpt.get());
-        dto.setAccountManager(loadAccountManager(client.getAccountManager()));
-        dto.setBankAccounts(loadBankAccounts(client.getBankAccounts()));
-        return Optional.of(dto);
+        ClientEntity clientEntity = clientOpt.get();
+        Client client = mapper.toDto(clientOpt.get());
+        client.setAccountManager(loadAccountManager(clientEntity.getAccountManager()));
+        client.setBankAccounts(loadBankAccounts(clientEntity.getBankAccountEntities()));
+        return Optional.of(client);
     }
 
-    public List<ClientDTO> getAll() {
+    public List<Client> getAll() {
         log.info("Retrieving all clients from database.");
-        return new LinkedList<>(
-                mapper.toDtos(
-                        clientRepository.findAll()));
+        return mapper.toDtos((List<ClientEntity>) clientRepository.findAll());
     }
 
-    public ClientDTO save(Client client) {
+    public Client save(ClientEntity clientEntity) {
         log.info("Saving client {} {} to database",
-                client.getName(),
-                client.getSurname());
-        return mapper.toDto(clientRepository.save(client));
+                clientEntity.getName(),
+                clientEntity.getSurname());
+        return mapper.toDto(clientRepository.save(clientEntity));
     }
 
-    public List<ClientDTO> saveAll(List<Client> client) {
+    public List<Client> saveAll(List<ClientEntity> clientEntity) {
         log.info("Saving all clients to database.");
-        return mapper.toDtos(
-                clientRepository.saveAll(client));
+        return mapper.toDtos((List<ClientEntity>) clientRepository.saveAll(clientEntity));
     }
 
-    public Optional<ClientDTO> deleteClient(Long id) {
+    public Optional<Client> deleteClient(Long id) {
         log.info("Deleting client with id = {} from database", id);
-        return clientRepository
-                .removeClientById(id)
-                .map(entity -> mapper.toDto(entity));
+        return clientRepository.removeClientById(id).map(entity -> mapper.toDto(entity));
     }
 
     public ClientMapper getMapper() {
         return mapper;
     }
 
-    private EmployeeDTO loadAccountManager(Employee employee) {
+    private Employee loadAccountManager(EmployeeEntity employeeEntity) {
         return employeeMapper.toDto(
-                employeeRepository.findById(employee.getId()).get());
+                employeeRepository.findById(employeeEntity.getId()).get());
     }
 
-    private List<BankAccountDTO> loadBankAccounts(List<BankAccount> bankAccounts) {
-        return bankAccountMapper.toDtos(
+    private List<BankAccount> loadBankAccounts(List<BankAccountEntity> bankAccountEntities) {
+        return bankAccountMapper.toDtos( (List<BankAccountEntity>)
                 bankAccountRepository.findAllById(
-                        bankAccounts.stream()
+                        bankAccountEntities.stream()
                                     .map(account -> account.getId())
                                     .collect(Collectors.toList())));
     }

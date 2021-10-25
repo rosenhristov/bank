@@ -1,7 +1,7 @@
 package com.rosenhristov.bank.service;
 
-import com.rosenhristov.bank.dto.TransactionDTO;
-import com.rosenhristov.bank.entity.Transaction;
+import com.rosenhristov.bank.entity.TransactionEntity;
+import com.rosenhristov.bank.pojo.Transaction;
 import com.rosenhristov.bank.exception.mapper.TransactionMapper;
 import com.rosenhristov.bank.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
@@ -19,31 +19,29 @@ public class TransactionService {
     private final TransactionRepository repository;
     private final TransactionMapper mapper;
 
-    public Optional<TransactionDTO> getTransactionById(Long id) {
+    public Optional<Transaction> getTransactionById(Long id) {
         log.info("Retrieving Transaction with id = {} from database", id);
-        return repository
-                .findById(id)
-                .map(entity -> mapper.toDto(entity));
+        return repository.findById(id).map(entity -> mapper.toDto(entity));
     }
 
-    public List<TransactionDTO> getAll() {
+    public List<Transaction> getAll() {
         log.info("Retrieving all the Transaction entities from database.");
-        return mapper.toDtos(repository.findAll());
+        return mapper.toDtos((List<TransactionEntity>) repository.findAll());
     }
 
-    public TransactionDTO save(Transaction transaction) {
+    public Transaction save(TransactionEntity transactionEntity) {
         log.info("Saving Transaction between accounts {} and {} to database",
-                transaction.getSender().getAccountNumber(),
-                transaction.getReceiver().getAccountNumber());
-        return mapper.toDto(repository.save(transaction));
+                transactionEntity.getSender().getAccountNumber(),
+                transactionEntity.getReceiver().getAccountNumber());
+        return mapper.toDto(repository.save(transactionEntity));
     }
 
-    public List<TransactionDTO> saveAll(List<Transaction> transactions) {
+    public List<Transaction> saveAll(List<TransactionEntity> transactionEntities) {
         log.info("Saving all transactions to database.");
-        return mapper.toDtos(repository.saveAll(transactions));
+        return mapper.toDtos((List<TransactionEntity>) repository.saveAll(transactionEntities));
     }
 
-    public Optional<TransactionDTO> deleteTransaction(Long id) {
+    public Optional<Transaction> deleteTransaction(Long id) {
         log.info("Deleting transaction with id = {} from database", id);
         return repository.removeTransactionById(id).map(entity -> mapper.toDto(entity));
     }
