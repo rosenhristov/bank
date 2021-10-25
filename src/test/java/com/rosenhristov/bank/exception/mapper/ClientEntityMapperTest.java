@@ -25,14 +25,14 @@ public class ClientEntityMapperTest {
         clientMapper = new ClientMapper(dozer);
     }
 
-    private ClientEntity initClient() {
+    private ClientEntity buildClientEntity() {
        return new ClientEntity((long) 50, "Ross", "F.", "Morris", "P@ss0rd12345678",
                 "0889679972", "ross@domain.com", "10 'Asen Bosev' Str., 1000 Sofia, Bulgaria",
                 (long) 1131011, Date.valueOf("2020-07-01"), Date.valueOf("2030-07-01"), null,
                 null, (long) 1324657980, (long)1176453120);
     }
 
-    private Client initClientDto() {
+    private Client buildClient() {
         return new Client((long) 50, "Ross", "F.", "Morris",
                 "0889679972", "ross@domain.com", "10 'Asen Bosev' Str., 1000 Sofia, Bulgaria",
                 (long) 1131011, Date.valueOf("2020-07-01"), Date.valueOf("2030-07-01"), null,
@@ -41,8 +41,8 @@ public class ClientEntityMapperTest {
 
 
     @Test
-    public void toDtoTest() {
-        ClientEntity clientEntity = initClient();
+    public void clientEntityToClientDtoTest() {
+        ClientEntity clientEntity = buildClientEntity();
         Client dto = clientMapper.toDto(clientEntity);
         assertEquals( "id", dto.getId(), clientEntity.getId());
         assertEquals("name", dto.getName(), clientEntity.getName());
@@ -59,5 +59,26 @@ public class ClientEntityMapperTest {
         assertEquals("debitCardNumber", dto.getDebitCardNumber(), clientEntity.getDebitCardNumber());
         assertEquals("creditCardNumber", dto.getCreditCardNumber(), clientEntity.getCreditCardNumber());
     }
+
+    @Test
+    public void clientDtoToClientEntityTest() {
+        Client client = buildClient();
+        ClientEntity clientEntity = clientMapper.toEntity(client);
+        assertEquals( "id", clientEntity.getId(), client.getId());
+        assertEquals("name", clientEntity.getName(), client.getName());
+        assertEquals("midName", clientEntity.getMidName(), client.getMidName());
+        assertEquals("surname", clientEntity.getSurname(), client.getSurname());
+        assertEquals("phone", clientEntity.getPhone(), client.getPhone());
+        assertEquals("email", clientEntity.getEmail(), client.getEmail());
+        assertEquals("address", clientEntity.getAddress(), client.getAddress());
+        assertEquals("idCardNumber", clientEntity.getIdCardNumber(), client.getIdCardNumber());
+        assertEquals("idCardIssued", clientEntity.getIdCardIssueDate(), client.getIdCardIssueDate());
+        assertEquals("idCardExpiration", clientEntity.getIdCardExpirationDate(), client.getIdCardExpirationDate());
+        assertEquals("bankAccounts", clientEntity.getBankAccountEntities(), client.getBankAccounts());
+        assertEquals("accountManager", clientEntity.getAccountManager(), client.getAccountManager());
+        assertEquals("debitCardNumber", clientEntity.getDebitCardNumber(), client.getDebitCardNumber());
+        assertEquals("creditCardNumber", clientEntity.getCreditCardNumber(), client.getCreditCardNumber());
+    }
+
 
 }
