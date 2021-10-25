@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
-import java.math.BigInteger;
+import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class Employee extends BaseDTO {
     private String position;
 
     @NotNull(message = "Employee salary must not be empty")
-    private BigInteger salary;
+    private BigDecimal salary;
 
     @NotNull(message = "Employee phone number must not be empty")
     private String phone;

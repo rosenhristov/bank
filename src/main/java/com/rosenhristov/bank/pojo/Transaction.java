@@ -28,4 +28,5 @@ public class Transaction extends BaseDTO {
 
     @NotNull(message = "Transaction's date of creation must not be empty")
     private Date createdAt;
+
 }
