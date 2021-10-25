@@ -19,18 +19,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DozerConfig {
 
-    @Bean
+    @Bean("dozerBeanMapper")
     public DozerBeanMapper getDozerMapper() {
         log.info("Initializing DozerBeanMapper bean");
+
         DozerBeanMapper dozerMapper = (DozerBeanMapper) DozerBeanMapperSingletonWrapper.getInstance();
         dozerMapper.addMapping(getClientMappings());
         dozerMapper.addMapping(getEmployeeMappings());
         dozerMapper.addMapping(getBankAccountMappings());
         dozerMapper.addMapping(getTransactionMappings());
+
         return dozerMapper;
     }
 
-    @Bean
+    @Bean("clientMappings")
     public BeanMappingBuilder getClientMappings() {
         return new BeanMappingBuilder() {
             @Override
@@ -58,7 +60,7 @@ public class DozerConfig {
     }
 
 
-    @Bean
+    @Bean("employeeMappings")
     public BeanMappingBuilder getEmployeeMappings() {
         return new BeanMappingBuilder() {
             @Override
@@ -84,7 +86,7 @@ public class DozerConfig {
         };
     }
 
-    @Bean
+    @Bean("bankAccountMappings")
     public BeanMappingBuilder getBankAccountMappings() {
         return new BeanMappingBuilder() {
             @Override
@@ -104,7 +106,7 @@ public class DozerConfig {
         };
     }
 
-    @Bean
+    @Bean("transactionMappings")
     public BeanMappingBuilder getTransactionMappings() {
         return new BeanMappingBuilder() {
             @Override

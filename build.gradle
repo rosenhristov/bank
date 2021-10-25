@@ -51,11 +51,17 @@ dependencies {
 
 	//-- Dozer and related dependencies --
 	// - compile related:
-	implementation 'net.sf.dozer:dozer:5.5.1'
+	implementation('net.sf.dozer:dozer:5.5.1') {
+		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+	}
 	implementation 'commons-beanutils:commons-beanutils:1.9.4'
 	implementation 'org.apache.commons:commons-lang3:3.11'
-	implementation 'org.slf4j:slf4j-api:1.7.5'
-	implementation 'org.slf4j:slf4j-log4j12:1.7.5'
+	implementation ('org.slf4j:slf4j-api:1.7.5') {
+		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+	}
+	implementation ('org.slf4j:slf4j-log4j12:1.7.5') {
+		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+	}
 //	implementation 'org.slf4j:org.slf4j:jcl-over-slf4j:1.7.5'
 
 	// - Dozer unit tests related dependencies
@@ -68,6 +74,7 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 	}
 }
 
