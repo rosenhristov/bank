@@ -1,9 +1,9 @@
 package com.rosenhristov.bank.exception.mapper;
 
-import com.rosenhristov.bank.dto.BankAccountDTO;
-import com.rosenhristov.bank.dto.TransactionDTO;
-import com.rosenhristov.bank.entity.BankAccount;
-import com.rosenhristov.bank.entity.Transaction;
+import com.rosenhristov.bank.entity.TransactionEntity;
+import com.rosenhristov.bank.pojo.BankAccount;
+import com.rosenhristov.bank.pojo.Transaction;
+import com.rosenhristov.bank.entity.BankAccountEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,40 +21,40 @@ public class TransactionMapper extends BaseMapper {
         super(mapper);
     }
 
-    public TransactionDTO toDto(Transaction entity) {
+    public Transaction toDto(TransactionEntity entity) {
         log.info("Mapping Transaction entity to DTO");
-        return mapper.map(entity, TransactionDTO.class);
+        return mapper.map(entity, Transaction.class);
     }
 
-    public Transaction toEntity(TransactionDTO dto) {
-        return mapper.map(dto, Transaction.class);
+    public TransactionEntity toEntity(Transaction dto) {
+        return mapper.map(dto, TransactionEntity.class);
     }
 
-    public List<TransactionDTO> toDtos(List<Transaction> entities) {
+    public List<Transaction> toDtos(List<TransactionEntity> entities) {
         log.info("Mapping Transaction entities to DTOs");
         return entities.stream()
                        .map(entity -> toDto(entity))
                        .collect(Collectors.toList());
     }
 
-    public List<Transaction> toEntities(List<TransactionDTO> dtos) {
+    public List<TransactionEntity> toEntities(List<Transaction> dtos) {
         log.info("Mapping Transaction DTO to entity");
         return dtos.stream()
                    .map(dto -> toEntity(dto))
                    .collect(Collectors.toList());
     }
 
-    public BankAccountDTO toAccountDto(BankAccount account) {
+    public BankAccount toAccountDto(BankAccountEntity account) {
         log.info("Mapping BankAccount entity to DTO");
-        return mapper.map(account, BankAccountDTO.class);
+        return mapper.map(account, BankAccount.class);
     }
 
-    public BankAccount toAccountEntity(BankAccountDTO dto) {
+    public BankAccountEntity toAccountEntity(BankAccount dto) {
         log.info("Mapping BankAccount DTO to entity");
-        return mapper.map(dto, BankAccount.class);
+        return mapper.map(dto, BankAccountEntity.class);
     }
 
-    public List<BankAccountDTO> toAccountDtos(List<BankAccount> entities) {
+    public List<BankAccount> toAccountDtos(List<BankAccountEntity> entities) {
         log.info("Mapping BankAccount entities to DTOs");
         return entities.stream()
                 .map(entity -> toAccountDto(entity))
@@ -62,7 +62,7 @@ public class TransactionMapper extends BaseMapper {
 
     }
 
-    public List<BankAccount> toAccountEntities(List<BankAccountDTO> dtos) {
+    public List<BankAccountEntity> toAccountEntities(List<BankAccount> dtos) {
         log.info("Mapping BankAccount DTOs to entities");
         return dtos.stream()
                    .map(dto -> toAccountEntity(dto))

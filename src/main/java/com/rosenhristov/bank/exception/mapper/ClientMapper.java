@@ -1,9 +1,9 @@
 package com.rosenhristov.bank.exception.mapper;
 
-import com.rosenhristov.bank.dto.ClientDTO;
-import com.rosenhristov.bank.dto.EmployeeDTO;
-import com.rosenhristov.bank.entity.Client;
-import com.rosenhristov.bank.entity.Employee;
+import com.rosenhristov.bank.pojo.Client;
+import com.rosenhristov.bank.pojo.Employee;
+import com.rosenhristov.bank.entity.ClientEntity;
+import com.rosenhristov.bank.entity.EmployeeEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.dozer.DozerBeanMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,48 +21,48 @@ public class ClientMapper extends BaseMapper {
         super(mapper);
     }
 
-    public ClientDTO toDto(Client entity) {
+    public Client toDto(ClientEntity entity) {
         log.info("Mapping Client entity to DTO");
-        return mapper.map(entity, ClientDTO.class);
+        return mapper.map(entity, Client.class);
     }
 
-    public Client toEntity(ClientDTO dto) {
+    public ClientEntity toEntity(Client dto) {
         log.info("Mapping Client DTO to entity");
-        return mapper.map(dto, Client.class);
+        return mapper.map(dto, ClientEntity.class);
     }
 
-    public List<ClientDTO> toDtos(List<Client> entities) {
+    public List<Client> toDtos(List<ClientEntity> entities) {
         log.info("Mapping Client entities to DTOs");
         return entities.stream()
                        .map(entity -> toDto(entity))
                        .collect(Collectors.toList());
     }
 
-    public List<Client> toEntities(List<ClientDTO> dtos) {
+    public List<ClientEntity> toEntities(List<Client> dtos) {
         log.info("Mapping Client DTOs to entities");
         return dtos.stream()
                    .map(dto -> toEntity(dto))
                    .collect(Collectors.toList());
     }
 
-    public EmployeeDTO toEmployeeDto(Employee entity) {
+    public Employee toEmployeeDto(EmployeeEntity entity) {
         log.info("Mapping Employee entity to DTO");
-        return mapper.map(entity, EmployeeDTO.class);
+        return mapper.map(entity, Employee.class);
     }
 
-    public Employee toEmployeeEntity(EmployeeDTO dto) {
+    public EmployeeEntity toEmployeeEntity(Employee dto) {
         log.info("Mapping Employee DTO to entity");
-        return mapper.map(dto, Employee.class);
+        return mapper.map(dto, EmployeeEntity.class);
     }
 
-    public List<EmployeeDTO> toEmployeeDtos(List<Employee> entities) {
+    public List<Employee> toEmployeeDtos(List<EmployeeEntity> entities) {
         log.info("Mapping Employee entities to DTOs");
         return entities.stream()
                 .map(entity -> toEmployeeDto(entity))
                 .collect(Collectors.toList());
     }
 
-    public List<Employee> toEmployeeEntities(List<EmployeeDTO> dtos) {
+    public List<EmployeeEntity> toEmployeeEntities(List<Employee> dtos) {
         log.info("Mapping Employee DTOs to entities");
         return dtos.stream()
                 .map(dto -> toEmployeeEntity(dto))
