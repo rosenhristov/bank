@@ -19,7 +19,7 @@ import java.util.Currency;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class BankAccount extends BaseEntity {
+public class BankAccountEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_Sequence")
@@ -60,18 +60,18 @@ public class BankAccount extends BaseEntity {
     @JoinColumn(name="client_id")
     @ApiModelProperty(name = "client", value = "the client that owns this bank account",
                       dataType = "Client", example = "Client{\"name\":\"Ivan Ivanov\", ...}")
-    protected Client client;
+    protected ClientEntity clientEntity;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
             CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="employee_id")
     @ApiModelProperty(name = "accountManager", value = "the bank employee serving as an account manager for the current account",
                       dataType = "Employee", example = "Employee{\"name\":\"Peter Dimitrov\", ...}")
-    private Employee accountManager;
+    private EmployeeEntity accountManager;
 
     @Override
     protected void doPreRemove() {
-        setClient(null);
+        setClientEntity(null);
         setAccountManager(null);
     }
 }

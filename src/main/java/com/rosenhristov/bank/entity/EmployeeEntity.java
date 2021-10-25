@@ -22,7 +22,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper=true)
-public class Employee extends BaseEntity {
+public class EmployeeEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_Sequence")
@@ -98,7 +98,7 @@ public class Employee extends BaseEntity {
                           CascadeType.DETACH, CascadeType.REFRESH})
     @ApiModelProperty(name = "clients", value = "the list of clients the employee is personally responsible for, e.g. as account manager or personal banker",
                       dataType = "List", example = "{client1, cient2, client3, ...}")
-    List<Client> clients;
+    List<ClientEntity> clientEntities;
 
     @OneToMany(fetch = FetchType.EAGER,
             mappedBy="accountManager",
@@ -106,11 +106,11 @@ public class Employee extends BaseEntity {
                     CascadeType.DETACH, CascadeType.REFRESH})
     @ApiModelProperty(name = "accounts", value = "list of accounts the employee manages as account manager if such",
             dataType = "List", example = "{account1, account2, account3, ...}")
-    List<BankAccount> accounts;
+    List<BankAccountEntity> accounts;
 
     @Override
     protected void doPreRemove() {
         setAccounts(null);
-        setClients(null);
+        setClientEntities(null);
     }
 }

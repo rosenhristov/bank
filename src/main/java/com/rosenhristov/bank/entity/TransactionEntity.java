@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 @EqualsAndHashCode(callSuper=true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class Transaction extends BaseEntity {
+public class TransactionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "transaction_Sequence")
@@ -33,23 +33,23 @@ public class Transaction extends BaseEntity {
     private BigDecimal amount;
 
     @NotNull(message = "Transaction sender must not be empty")
-    @ManyToOne(targetEntity = BankAccount.class,
+    @ManyToOne(targetEntity = BankAccountEntity.class,
                fetch = FetchType.LAZY,
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                            CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "sender_id")
     @ApiModelProperty(name = "sender", value = "the bank account from which the transferred amount was withdrawn",
                       dataType = "BankAccount", example = "BankAccount(id:1,...}")
-    private BankAccount sender;
+    private BankAccountEntity sender;
 
     @NotNull(message = "Transaction receiver must not be empty")
-    @ManyToOne(targetEntity = BankAccount.class,
+    @ManyToOne(targetEntity = BankAccountEntity.class,
                fetch = FetchType.LAZY,
                cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name = "receiver_id")
     @ApiModelProperty(name = "receiver", value = "the bank account in which the transferred amount was added",
                       dataType = "BankAccount", example = "BankAccount(id:21,...}")
-    private BankAccount receiver;
+    private BankAccountEntity receiver;
 
 }

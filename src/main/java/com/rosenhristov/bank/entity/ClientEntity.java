@@ -21,7 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class Client extends BaseEntity {
+public class ClientEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_Sequence")
@@ -87,19 +87,19 @@ public class Client extends BaseEntity {
 
     @NotNull(message = "Bank accounts must not be empty")
     @OneToMany(fetch = FetchType.EAGER,
-            mappedBy="client",
+            mappedBy= "clientEntity",
             cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                        CascadeType.DETACH, CascadeType.REFRESH})
     @ApiModelProperty(name = "bankAccounts", value = "a client's list of bank accounts",
                       dataType = "List<BankAccount>", example = "{account1, account2, account3,...}")
-    private List<BankAccount> bankAccounts;
+    private List<BankAccountEntity> bankAccountEntities;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE,
                           CascadeType.DETACH, CascadeType.REFRESH})
     @JoinColumn(name="employee_id")
     @ApiModelProperty(name = "accountManager", value = "a client's account manager (bank employee)",
                       dataType = "Employee", example = "Employee{id:10,...}")
-    private Employee accountManager;
+    private EmployeeEntity accountManager;
 
     @Column(name = "debit_card_number")
     @ApiModelProperty(name = "debitCardNumber", value = "a client's debit card number",
@@ -114,6 +114,6 @@ public class Client extends BaseEntity {
     @Override
     protected void doPreRemove() {
         setAccountManager(null);
-        setBankAccounts(null);
+        setBankAccountEntities(null);
     }
 }
