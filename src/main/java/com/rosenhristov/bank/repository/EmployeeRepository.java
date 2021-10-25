@@ -1,16 +1,16 @@
 package com.rosenhristov.bank.repository;
 
-import com.rosenhristov.bank.entity.Employee;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.rosenhristov.bank.entity.EmployeeEntity;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends CrudRepository<EmployeeEntity, Long> {
 
-    default Optional<Employee> removeEmployeeById(Long id) {
-        Optional<Employee> employee = findById(id);
+    default Optional<EmployeeEntity> removeEmployeeById(Long id) {
+        Optional<EmployeeEntity> employee = findById(id);
         if (employee.isPresent()) {
             delete(employee.get());
             return employee;

@@ -1,16 +1,16 @@
 package com.rosenhristov.bank.repository;
 
-import com.rosenhristov.bank.entity.BankAccount;
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.rosenhristov.bank.entity.BankAccountEntity;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface BankAccountRepository extends JpaRepository<BankAccount, Long> {
+public interface BankAccountRepository extends CrudRepository<BankAccountEntity, Long> {
 
-    default Optional<BankAccount> removeAccountById(Long id) {
-        Optional<BankAccount> account = findById(id);
+    default Optional<BankAccountEntity> removeAccountById(Long id) {
+        Optional<BankAccountEntity> account = findById(id);
         if (account.isPresent()) {
             delete(account.get());
             return account;
