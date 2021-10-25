@@ -45,7 +45,7 @@ dependencies {
 	implementation 'javax.xml:jaxb-impl:2.1'
 	implementation 'org.springframework:spring-context'
 	implementation 'org.springframework.boot:spring-boot-devtools'
-	implementation "com.oracle.database.jdbc:ojdbc8-production:19.7.0.0" //	compile files('libs/ORACLE_OJDBC8')
+	implementation 'org.postgresql:postgresql:42.3.0'
 	implementation 'org.springframework.hateoas:spring-hateoas:1.2.2'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
@@ -55,13 +55,13 @@ dependencies {
 	implementation 'commons-beanutils:commons-beanutils:1.9.4'
 	implementation 'org.apache.commons:commons-lang3:3.11'
 	implementation 'org.slf4j:slf4j-api:1.7.5'
+	implementation 'org.slf4j:slf4j-log4j12:1.7.5'
 //	implementation 'org.slf4j:org.slf4j:jcl-over-slf4j:1.7.5'
 
 	// - Dozer unit tests related dependencies
 	implementation 'asm:asm:3.3.1'
 	implementation 'cglib:cglib-nodep:2.2.2'
-	implementation 'org.mockito:mockito-all:1.9.5'
-//	implementation 'org.slf4j:slf4j-log4j12:1.7.5'
+	testImplementation 'org.mockito:mockito-all:1.9.5'
 //	implementation 'stax:stax:1.1.2-dev'
 	implementation 'relaxngDatatype:relaxngDatatype:20020414'
 

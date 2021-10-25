@@ -1,13 +1,13 @@
 package com.rosenhristov.bank.config;
 
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
-import oracle.ucp.jdbc.PoolDataSource;
-import oracle.ucp.jdbc.PoolDataSourceFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
+import java.io.PrintWriter;
 import java.sql.SQLException;
 
 @Slf4j
@@ -24,7 +24,7 @@ public class DataSourceConfig {
     private String password;
 
     @Value("${spring.datasource.hikari.minimumIdle:}")
-    private int minimumPoolSize;
+    private int minimumIdle;
 
     @Value("${spring.datasource.hikari.maximumPoolSize:}")
     private int maximumPoolSize;
@@ -33,15 +33,15 @@ public class DataSourceConfig {
     @Bean
     public DataSource dataSource() throws SQLException {
         log.info("Initializig DataSource bean");
-        PoolDataSource dataSource = PoolDataSourceFactory.getPoolDataSource();
-        dataSource.setUser(username);
+
+        HikariDataSource dataSource = new HikariDataSource();
+        dataSource.setJdbcUrl(url);
+        dataSource.setUsername(username);
         dataSource.setPassword(password);
-        dataSource.setConnectionFactoryClassName("oracle.jdbc.pool.OracleDataSource");
-        dataSource.setURL(url);
-        dataSource.setFastConnectionFailoverEnabled(true);
-        dataSource.setInitialPoolSize(minimumPoolSize);
-        dataSource.setMinPoolSize(minimumPoolSize);
-        dataSource.setMaxPoolSize(maximumPoolSize);
+        dataSource.setLogWriter(new PrintWriter(System.out));
+        dataSource.setMaximumPoolSize(maximumPoolSize);
+        dataSource.setMinimumIdle(minimumIdle);
+
         return dataSource;
     }
 }
