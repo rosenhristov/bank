@@ -1,13 +1,13 @@
 package com.rosenhristov.bank.config;
 
-import com.rosenhristov.bank.dto.BankAccountDTO;
-import com.rosenhristov.bank.dto.ClientDTO;
-import com.rosenhristov.bank.dto.EmployeeDTO;
-import com.rosenhristov.bank.dto.TransactionDTO;
-import com.rosenhristov.bank.entity.BankAccount;
-import com.rosenhristov.bank.entity.Client;
-import com.rosenhristov.bank.entity.Employee;
-import com.rosenhristov.bank.entity.Transaction;
+import com.rosenhristov.bank.entity.TransactionEntity;
+import com.rosenhristov.bank.pojo.BankAccount;
+import com.rosenhristov.bank.pojo.Client;
+import com.rosenhristov.bank.pojo.Employee;
+import com.rosenhristov.bank.pojo.Transaction;
+import com.rosenhristov.bank.entity.BankAccountEntity;
+import com.rosenhristov.bank.entity.ClientEntity;
+import com.rosenhristov.bank.entity.EmployeeEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.dozer.DozerBeanMapper;
 import org.dozer.DozerBeanMapperSingletonWrapper;
@@ -35,7 +35,7 @@ public class DozerConfig {
         return new BeanMappingBuilder() {
             @Override
             protected void configure() {
-                mapping(Client.class, ClientDTO.class)
+                mapping(ClientEntity.class, Client.class)
                         .fields("id", "id")
                         .fields("name", "name")
                         .fields("midName", "midName")
@@ -63,7 +63,7 @@ public class DozerConfig {
         return new BeanMappingBuilder() {
             @Override
             protected void configure() {
-                mapping(Employee.class, EmployeeDTO.class)
+                mapping(EmployeeEntity.class, Employee.class)
                         .fields("id", "id")
                         .fields("name", "name")
                         .fields("midName", "midName")
@@ -89,7 +89,7 @@ public class DozerConfig {
         return new BeanMappingBuilder() {
             @Override
             protected void configure() {
-                mapping(BankAccount.class, BankAccountDTO.class)
+                mapping(BankAccountEntity.class, BankAccount.class)
                         .fields("id", "id")
                         .fields("accountNumber", "accountNumber")
                         .fields("iban", "iban")
@@ -109,7 +109,7 @@ public class DozerConfig {
         return new BeanMappingBuilder() {
             @Override
             protected void configure() {
-                mapping(Transaction.class, TransactionDTO.class)
+                mapping(TransactionEntity.class, Transaction.class)
                         .fields("id", "id")
                         .fields("amount", "amount")
                         .fields("sender", "sender")
