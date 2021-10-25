@@ -7,8 +7,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import java.sql.Date;
-
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 public class ClientEntityMapperTest {
@@ -37,44 +35,9 @@ public class ClientEntityMapperTest {
         transactionMapper = new TransactionMapper(dozer);
     }
 
-    private ClientEntity buildClientEntity() {
-       return new ClientEntity(50L,
-               "Ross",
-               "F.",
-               "Morris",
-               "P@ss0rd12345678",
-               "0889679972",
-               "ross@domain.com",
-               "10 'Asen Bosev' Str., 1000 Sofia, Bulgaria",
-                1131011L,
-               Date.valueOf("2020-07-01"),
-               Date.valueOf("2030-07-01"),
-               null,
-               null,
-               1324657980L,
-               1176453120L);
-    }
-
-    private Client buildClient() {
-        return new Client(50L,
-                "Ross",
-                "F.",
-                "Morris",
-                "0889679972",
-                "ross@domain.com",
-                "10 'Asen Bosev' Str., 1000 Sofia, Bulgaria",
-                1131011L,
-                Date.valueOf("2020-07-01"),
-                Date.valueOf("2030-07-01"), null,
-                null,
-                1324657980L,
-                1176453120L);
-    }
-
-
     @Test
     public void clientEntityToClientDtoTest() {
-        ClientEntity clientEntity = buildClientEntity();
+        ClientEntity clientEntity = PojoStubs.buildClientEntity();
         Client dto = clientMapper.toDto(clientEntity);
         assertEquals( "id", dto.getId(), clientEntity.getId());
         assertEquals("name", dto.getName(), clientEntity.getName());
@@ -94,7 +57,7 @@ public class ClientEntityMapperTest {
 
     @Test
     public void clientDtoToClientEntityTest() {
-        Client clientDto = buildClient();
+        Client clientDto = PojoStubs.buildClient();
         ClientEntity clientEntity = clientMapper.toEntity(clientDto);
         assertEquals( "id", clientEntity.getId(), clientDto.getId());
         assertEquals("name", clientEntity.getName(), clientDto.getName());
