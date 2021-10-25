@@ -2,7 +2,7 @@ package com.rosenhristov.bank.service;
 
 import com.rosenhristov.bank.pojo.Employee;
 import com.rosenhristov.bank.entity.EmployeeEntity;
-import com.rosenhristov.bank.exception.mapper.EmployeeMapper;
+import com.rosenhristov.bank.mapper.EmployeeMapper;
 import com.rosenhristov.bank.repository.EmployeeRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

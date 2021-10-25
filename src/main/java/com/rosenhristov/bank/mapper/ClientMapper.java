@@ -1,4 +1,4 @@
-package com.rosenhristov.bank.exception.mapper;
+package com.rosenhristov.bank.mapper;
 
 import com.rosenhristov.bank.pojo.Client;
 import com.rosenhristov.bank.pojo.Employee;

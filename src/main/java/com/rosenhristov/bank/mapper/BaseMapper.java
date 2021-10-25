@@ -1,4 +1,4 @@
-package com.rosenhristov.bank.exception.mapper;
+package com.rosenhristov.bank.mapper;
 
 import org.dozer.DozerBeanMapper;
 import org.springframework.stereotype.Component;

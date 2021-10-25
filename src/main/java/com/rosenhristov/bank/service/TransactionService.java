@@ -2,7 +2,7 @@ package com.rosenhristov.bank.service;
 
 import com.rosenhristov.bank.entity.TransactionEntity;
 import com.rosenhristov.bank.pojo.Transaction;
-import com.rosenhristov.bank.exception.mapper.TransactionMapper;
+import com.rosenhristov.bank.mapper.TransactionMapper;
 import com.rosenhristov.bank.repository.TransactionRepository;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
