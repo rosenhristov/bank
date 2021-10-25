@@ -1,7 +1,7 @@
 package com.rosenhristov.bank.controller;
 
-import com.rosenhristov.bank.dto.ClientDTO;
-import com.rosenhristov.bank.entity.Client;
+import com.rosenhristov.bank.pojo.Client;
+import com.rosenhristov.bank.entity.ClientEntity;
 import com.rosenhristov.bank.exception.BankException;
 import com.rosenhristov.bank.exception.ErrorResponse;
 import com.rosenhristov.bank.service.ClientService;
@@ -27,15 +27,15 @@ public class ClientController {
 
     @ApiOperation(value = "Retrieve all clients", notes = "Used to fetch all clients from the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Client.class),
-            @ApiResponse(code = 201, message = "Created", response = Client.class),
+            @ApiResponse(code = 200, message = "Success", response = ClientEntity.class),
+            @ApiResponse(code = 201, message = "Created", response = ClientEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<List<ClientDTO>> getAll() {
+    public ResponseEntity<List<Client>> getAll() {
         log.info("GETting all clients");
         return ResponseEntity.of(
                 Optional.of(service.getAll()));
@@ -52,9 +52,9 @@ public class ClientController {
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/{clientId}", produces = {"application/json"})
-    public ResponseEntity<ClientDTO> getClientById(@PathVariable Long clientId) {
+    public ResponseEntity<Client> getClientById(@PathVariable Long clientId) {
         log.info("GETting client with id = {}", clientId);
-        Optional<ClientDTO> result = service.getClientById(clientId);
+        Optional<Client> result = service.getClientById(clientId);
         if (result.isEmpty()) {
             throw new BankException("Could not find client with id: " + clientId);
         }
@@ -67,16 +67,16 @@ public class ClientController {
             value="Add a new client",
             notes = "Used to insert new client in the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Client.class),
-            @ApiResponse(code = 201, message = "Created", response = Client.class),
+            @ApiResponse(code = 200, message = "Success", response = ClientEntity.class),
+            @ApiResponse(code = 201, message = "Created", response = ClientEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PostMapping(value = "/", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<ClientDTO> addCustomer(@Valid @RequestBody ClientDTO newClient) {
-        Optional<ClientDTO> result = Optional.ofNullable(
+    public ResponseEntity<Client> addCustomer(@Valid @RequestBody Client newClient) {
+        Optional<Client> result = Optional.ofNullable(
                 service.save(
                         service.getMapper().toEntity(newClient)));
         if (result.isEmpty()) {
@@ -89,18 +89,18 @@ public class ClientController {
 
     @ApiOperation(value="Update a client", notes = "Used to update a client with a certain id in the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Client.class),
-            @ApiResponse(code = 201, message = "Created", response = Client.class),
+            @ApiResponse(code = 200, message = "Success", response = ClientEntity.class),
+            @ApiResponse(code = 201, message = "Created", response = ClientEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PutMapping(value = "/{clientId}", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<ClientDTO> updateClient(@Valid @RequestBody ClientDTO newClient,
-                                                  @PathVariable Long clientId) {
+    public ResponseEntity<Client> updateClient(@Valid @RequestBody Client newClient,
+                                               @PathVariable Long clientId) {
         log.info("UPDATE-ing client with id = {}", clientId);
-        Optional<ClientDTO> result = service.getClientById(clientId);
+        Optional<Client> result = service.getClientById(clientId);
         if (result.isEmpty()) {
             throw new BankException("Could not find client with id = " + clientId);
         }
@@ -119,7 +119,7 @@ public class ClientController {
                     client.setAccountManager(newClient.getAccountManager());
                     client.setDebitCardNumber(newClient.getDebitCardNumber());
                     client.setCreditCardNumber(newClient.getDebitCardNumber());
-                    Optional<ClientDTO> dto = Optional.ofNullable(
+                    Optional<Client> dto = Optional.ofNullable(
                             service.save(
                                     service.getMapper().toEntity(client)));
                     if (dto.isEmpty()) {
@@ -132,16 +132,16 @@ public class ClientController {
     @ApiOperation(value="Delete a client with indicated id",
             notes = "Used to delete a client by id from the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Client.class),
+            @ApiResponse(code = 200, message = "Success", response = ClientEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @DeleteMapping(value = "/{clientId}", produces = {"application/json"})
-    public ResponseEntity<ClientDTO> deleteClient(@PathVariable Long clientId) {
+    public ResponseEntity<Client> deleteClient(@PathVariable Long clientId) {
         log.info("DELETE-ing bank account {}", clientId);
-        Optional<ClientDTO> result = service.deleteClient(clientId);
+        Optional<Client> result = service.deleteClient(clientId);
         if (result.isEmpty()) {
             throw new BankException("Could not delete client with id = " + clientId);
         }

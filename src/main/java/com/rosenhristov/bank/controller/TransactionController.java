@@ -1,7 +1,7 @@
 package com.rosenhristov.bank.controller;
 
-import com.rosenhristov.bank.dto.TransactionDTO;
-import com.rosenhristov.bank.entity.Transaction;
+import com.rosenhristov.bank.entity.TransactionEntity;
+import com.rosenhristov.bank.pojo.Transaction;
 import com.rosenhristov.bank.exception.BankException;
 import com.rosenhristov.bank.exception.ErrorResponse;
 import com.rosenhristov.bank.service.TransactionService;
@@ -27,14 +27,14 @@ public class TransactionController {
 
     @ApiOperation(value="Retrieve all financial transactions", notes = "Used to fetch all financial transactions from the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Transaction.class),
+            @ApiResponse(code = 200, message = "Success", response = TransactionEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/", produces = {"application/json"})
-    public ResponseEntity<List<TransactionDTO>> getAll() {
+    public ResponseEntity<List<Transaction>> getAll() {
         log.info("GETting all transactions");
         return ResponseEntity.of(
                 Optional.of(service.getAll()));
@@ -43,16 +43,16 @@ public class TransactionController {
     @ApiOperation(value="Fetch a financial transaction by id",
                   notes = "Provide and id to lookup specific financial transaction from the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Transaction.class),
+            @ApiResponse(code = 200, message = "Success", response = TransactionEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @GetMapping(value = "/{transactionId}", produces = {"application/json"})
-    public ResponseEntity<TransactionDTO> getTransactionById(@PathVariable Long transactionId) {
+    public ResponseEntity<Transaction> getTransactionById(@PathVariable Long transactionId) {
         log.info("GETting transaction with id = {}", transactionId);
-        Optional<TransactionDTO> result = service.getTransactionById(transactionId);
+        Optional<Transaction> result = service.getTransactionById(transactionId);
         if (result.isEmpty()) {
             throw new BankException("Could not find bank account with id: " + transactionId);
         }
@@ -62,17 +62,17 @@ public class TransactionController {
     @ApiOperation(
             value="Add a new financial transaction", notes = "Used to insert new financial transaction in the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Transaction.class),
-            @ApiResponse(code = 201, message = "Created", response = Transaction.class),
+            @ApiResponse(code = 200, message = "Success", response = TransactionEntity.class),
+            @ApiResponse(code = 201, message = "Created", response = TransactionEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PostMapping(value = "/", consumes = {"application/json"}, produces = {"application/json"})
-    public ResponseEntity<TransactionDTO> addTransaction(@Valid @RequestBody TransactionDTO newTransaction) {
+    public ResponseEntity<Transaction> addTransaction(@Valid @RequestBody Transaction newTransaction) {
         log.info("INSERTing transaction");
-        Optional<TransactionDTO> result = Optional.ofNullable(
+        Optional<Transaction> result = Optional.ofNullable(
                 service.save(
                         service.getMapper().toEntity(newTransaction)));
         if (result.isEmpty()) {
@@ -86,18 +86,18 @@ public class TransactionController {
             value="Modify a financial transaction",
             notes = "Used to replace an old financial transaction with a new one with a certain id in the database ")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Transaction.class),
-            @ApiResponse(code = 201, message = "Created", response = Transaction.class),
+            @ApiResponse(code = 200, message = "Success", response = TransactionEntity.class),
+            @ApiResponse(code = 201, message = "Created", response = TransactionEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @PutMapping(value = "/{transactionId}", consumes = {"application/json"}, produces = {"application/json"})
-    public  ResponseEntity<TransactionDTO> updateTransaction(@Valid @RequestBody TransactionDTO newTransaction,
-                                                             @PathVariable Long transactionId) {
+    public  ResponseEntity<Transaction> updateTransaction(@Valid @RequestBody Transaction newTransaction,
+                                                          @PathVariable Long transactionId) {
         log.info("UPDATE-ing transaction with id = {}", transactionId);
-        Optional<TransactionDTO> result = service.getTransactionById(transactionId);
+        Optional<Transaction> result = service.getTransactionById(transactionId);
         if (result.isEmpty()) {
             throw new BankException("Could not find transaction with id: " + transactionId);
         }
@@ -106,7 +106,7 @@ public class TransactionController {
                     transaction.setAmount(newTransaction.getAmount());
                     transaction.setSender(newTransaction.getSender());
                     transaction.setReceiver(newTransaction.getReceiver());
-                    Optional<TransactionDTO> dto = Optional.ofNullable(
+                    Optional<Transaction> dto = Optional.ofNullable(
                             service.save(
                                     service.getMapper().toEntity(transaction)));
                     if (dto.isEmpty()) {
@@ -119,16 +119,16 @@ public class TransactionController {
     @ApiOperation(value="Delete a financial transaction with indicated id",
             notes = "Used to delete a financial transaction by id from the database")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = Transaction.class),
+            @ApiResponse(code = 200, message = "Success", response = TransactionEntity.class),
             @ApiResponse(code = 401, message = "Unauthorized", response = ErrorResponse.class),
             @ApiResponse(code = 403, message = "Forbidden", response = ErrorResponse.class),
             @ApiResponse(code = 404, message = "Not found", response = ErrorResponse.class),
             @ApiResponse(code = 500, message = "Server failure", response = ErrorResponse.class)
     })
     @DeleteMapping(value = "/{transactionId}", produces = {"application/json"})
-    public ResponseEntity<TransactionDTO> deleteTransaction(@PathVariable Long transactionId) {
+    public ResponseEntity<Transaction> deleteTransaction(@PathVariable Long transactionId) {
         log.info("DELETE-ing transaction id = {}", transactionId);
-        Optional<TransactionDTO> result = service.deleteTransaction(transactionId);
+        Optional<Transaction> result = service.deleteTransaction(transactionId);
         if (result.isEmpty()) {
             throw new BankException("Could not delete bank account with id: " + transactionId);
         }
