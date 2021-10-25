@@ -27,52 +27,52 @@ ext {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.data:spring-data-rest-hal-explorer'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'io.springfox:springfox-boot-starter:3.0.0'
-	implementation 'io.springfox:springfox-bean-validators:3.0.0'
-	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-	implementation 'org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE'
-	implementation 'org.springframework:spring-core'
-	implementation 'javax.ws.rs:javax.ws.rs-api:2.1.1'
-	implementation 'org.projectlombok:lombok'
-	implementation 'javax.activation:activation:1.1.1'
-	implementation 'javax.xml.bind:jaxb-api:2.3.1'
-	implementation 'org.glassfish.jaxb:jaxb-core:3.0.0-M5'
-	implementation 'javax.xml:jaxb-impl:2.1'
-	implementation 'org.springframework:spring-context'
-	implementation 'org.springframework.boot:spring-boot-devtools'
-	implementation 'org.postgresql:postgresql:42.3.0'
-	implementation 'org.springframework.hateoas:spring-hateoas:1.2.2'
-	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('org.springframework.data:spring-data-rest-hal-explorer')
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-validation')
+	compile('org.springframework.boot:spring-boot-starter-actuator')
+	compile('io.springfox:springfox-boot-starter:3.0.0')
+	compile('io.springfox:springfox-bean-validators:3.0.0')
+	compile('io.springfox:springfox-swagger-ui:3.0.0')
+	compile('org.springframework.plugin:spring-plugin-core:2.0.0.RELEASE')
+	compile('org.springframework:spring-core')
+	compile('javax.ws.rs:javax.ws.rs-api:2.1.1')
+	compile('org.projectlombok:lombok')
+	compile('javax.activation:activation:1.1.1')
+	compile('javax.xml.bind:jaxb-api:2.3.1')
+	compile('org.glassfish.jaxb:jaxb-core:3.0.0-M5')
+	compile('javax.xml:jaxb-impl:2.1')
+	compile('org.springframework:spring-context')
+	compile('org.springframework.boot:spring-boot-devtools')
+	compile('org.postgresql:postgresql:42.3.0')
+	compile('org.springframework.hateoas:spring-hateoas:1.2.2')
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 
 	//-- Dozer and related dependencies --
 	// - compile related:
-	implementation('net.sf.dozer:dozer:5.5.1') {
+	compile('net.sf.dozer:dozer:5.5.1') {
 		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 	}
-	implementation 'commons-beanutils:commons-beanutils:1.9.4'
-	implementation 'org.apache.commons:commons-lang3:3.11'
-	implementation ('org.slf4j:slf4j-api:1.7.5') {
+	compile('commons-beanutils:commons-beanutils:1.9.4')
+	compile('org.apache.commons:commons-lang3:3.11')
+	compile('org.slf4j:slf4j-api:1.7.5') {
 		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 	}
-	implementation ('org.slf4j:slf4j-log4j12:1.7.5') {
+	compile('org.slf4j:slf4j-log4j12:1.7.5') {
 		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 	}
-//	implementation 'org.slf4j:org.slf4j:jcl-over-slf4j:1.7.5'
+//	compile('org.slf4j:org.slf4j:jcl-over-slf4j:1.7.5')
 
 	// - Dozer unit tests related dependencies
-	implementation 'asm:asm:3.3.1'
-	implementation 'cglib:cglib-nodep:2.2.2'
-	testImplementation 'org.mockito:mockito-all:1.9.5'
-//	implementation 'stax:stax:1.1.2-dev'
-	implementation 'relaxngDatatype:relaxngDatatype:20020414'
+	compile('asm:asm:3.3.1')
+	compile('cglib:cglib-nodep:2.2.2')
+	testCompile('org.mockito:mockito-all:1.9.5')
+//	compile('stax:stax:1.1.2-dev')
+	compile('relaxngDatatype:relaxngDatatype:20020414')
 
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+	testCompile('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 		exclude group: 'org.slf4j', module: 'slf4j-log4j12'
 	}
