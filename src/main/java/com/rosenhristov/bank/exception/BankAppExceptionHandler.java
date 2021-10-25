@@ -14,14 +14,16 @@ public class BankAppExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBankException(BankException e) {
         return new ResponseEntity<>(
                 new ErrorResponse(HttpStatus.BAD_REQUEST, e),
-                HttpStatus.BAD_REQUEST);
+                HttpStatus.BAD_REQUEST
+        );
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         return new ResponseEntity<>(
                 new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
     }
 
 
