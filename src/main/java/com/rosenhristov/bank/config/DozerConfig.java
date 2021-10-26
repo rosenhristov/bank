@@ -20,20 +20,20 @@ import org.springframework.context.annotation.Configuration;
 public class DozerConfig {
 
     @Bean("dozerBeanMapper")
-    public DozerBeanMapper getDozerMapper() {
+    public DozerBeanMapper buildDozerMapper() {
         log.info("Initializing DozerBeanMapper bean");
 
         DozerBeanMapper dozerMapper = (DozerBeanMapper) DozerBeanMapperSingletonWrapper.getInstance();
-        dozerMapper.addMapping(getClientMappings());
-        dozerMapper.addMapping(getEmployeeMappings());
-        dozerMapper.addMapping(getBankAccountMappings());
-        dozerMapper.addMapping(getTransactionMappings());
+        dozerMapper.addMapping(buildClientMappings());
+        dozerMapper.addMapping(buildEmployeeMappings());
+        dozerMapper.addMapping(buildBankAccountMappings());
+        dozerMapper.addMapping(buildTransactionMappings());
 
         return dozerMapper;
     }
 
     @Bean("clientMappings")
-    public BeanMappingBuilder getClientMappings() {
+    public BeanMappingBuilder buildClientMappings() {
         return new BeanMappingBuilder() {
             @Override
             protected void configure() {
@@ -61,7 +61,7 @@ public class DozerConfig {
 
 
     @Bean("employeeMappings")
-    public BeanMappingBuilder getEmployeeMappings() {
+    public BeanMappingBuilder buildEmployeeMappings() {
         return new BeanMappingBuilder() {
             @Override
             protected void configure() {
@@ -87,7 +87,7 @@ public class DozerConfig {
     }
 
     @Bean("bankAccountMappings")
-    public BeanMappingBuilder getBankAccountMappings() {
+    public BeanMappingBuilder buildBankAccountMappings() {
         return new BeanMappingBuilder() {
             @Override
             protected void configure() {
@@ -107,7 +107,7 @@ public class DozerConfig {
     }
 
     @Bean("transactionMappings")
-    public BeanMappingBuilder getTransactionMappings() {
+    public BeanMappingBuilder buildTransactionMappings() {
         return new BeanMappingBuilder() {
             @Override
             protected void configure() {
